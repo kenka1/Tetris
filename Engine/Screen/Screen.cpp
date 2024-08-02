@@ -44,4 +44,19 @@ void Screen::initialize()
         glfwTerminate();
         std::abort();
     }
+
+    glViewport(0, 0, width, height);
+    glfwSetWindowSizeCallback(window, size_callback);
+    glfwSetKeyCallback(window, key_callback);
+}
+
+void Screen::size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void Screen::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if(key == GLFW_KEY_ESCAPE)
+        glfwSetWindowShouldClose(window, 1);
 }

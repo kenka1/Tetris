@@ -5,11 +5,11 @@
 
 #include "GameMode/GameMode.h"
 #include "Screen/Screen.h"
-#include "Block/Block.h"
+#include "Shape/Shape.h"
 #include "Program/Program.h"
 
 GameMode::GameMode():
-    GameScreen(new Screen), prog(nullptr)
+    GameScreen(new Screen), prog(nullptr), DeltaTime(0.0)
 {}
 
 GameMode::~GameMode()
@@ -38,16 +38,40 @@ void GameMode::StartGame()
 void GameMode::GameLoop()
 {
     InitProgram();
-    Block* triangle = new Block;
+    Shape* triangle = new Shape;
     GLFWwindow* window = GameScreen->GetWindow();
 
+
+    double LastFrame = 0.0;
+    double CurrentFrame = 0.0;
+    float FPS = 0.0;
+    float temp_inc = 0.0;
+    float temp_fps = 0.0;
     while(!glfwWindowShouldClose(window))
     {
+        CurrentFrame = glfwGetTime();
+        DeltaTime = CurrentFrame - LastFrame;
+        LastFrame = CurrentFrame;
+
+        if(temp_inc <= 1.0)
+        {
+            temp_inc += DeltaTime;
+            ++temp_fps;
+        }
+        else
+        {
+            FPS = temp_fps;
+            temp_inc = 0.0;
+            temp_fps = 0.0;
+        }
+
+        std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
+
         glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(prog->GetProgram());
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

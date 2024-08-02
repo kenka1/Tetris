@@ -34,6 +34,7 @@ target_include_directories(a
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/External/glfw-3.4)
 add_subdirectory(${CMAKE_SOURCE_DIR}/External/glad)
+add_subdirectory(${CMAKE_SOURCE_DIR}/External/glm)
 add_subdirectory(${CMAKE_SOURCE_DIR}/Engine)
 
 target_link_libraries(a
@@ -44,4 +45,5 @@ target_link_libraries(a
         PRIVATE
         "glfw"
         "glad"
+        "glm"
         "stdc++fs")

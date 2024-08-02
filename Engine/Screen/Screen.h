@@ -26,4 +26,6 @@ private:
     int16_t height = ScreenCONST::HEIGHT;
     GLFWwindow* window;
     void initialize();
+    static void size_callback(GLFWwindow*, int, int);
+    static void key_callback(GLFWwindow*, int, int, int, int);
 };

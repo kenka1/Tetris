@@ -12,6 +12,7 @@ public:
 private:
     Screen* GameScreen;
     Program* prog;
+    double DeltaTime;
     void GameLoop();
     void InitProgram();
 };
