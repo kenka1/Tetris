@@ -15,4 +15,5 @@ private:
     double DeltaTime;
     void GameLoop();
     void InitProgram();
+    void CalculateDeltaTime(); // refactoring::implement
 };

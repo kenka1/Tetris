@@ -38,9 +38,16 @@ void GameMode::StartGame()
 void GameMode::GameLoop()
 {
     InitProgram();
-    Shape* triangle = new Shape;
+    Shape* block = new Shape;
     GLFWwindow* window = GameScreen->GetWindow();
 
+
+    block->Scale(50.0f);
+    block->UpdateTransform();
+    glm::mat4 Proj = GameScreen->GetProjection();
+    glm::mat4 Model(1.0f);
+    glm::mat4 Transform(1.0f);
+    glm::vec3 CurrentPos(0.0f);
 
     double LastFrame = 0.0;
     double CurrentFrame = 0.0;
@@ -63,7 +70,16 @@ void GameMode::GameLoop()
             FPS = temp_fps;
             temp_inc = 0.0;
             temp_fps = 0.0;
+
+            CurrentPos = block->GetTranslate();
+            CurrentPos.y -= 25.0f;
+            block->Translate(CurrentPos);
+            block->UpdateTransform();
+            std::cout << "MOVE" << std::endl;
         }
+
+        Model = block->GetTransform();
+        Transform = Proj * Model;
 
         std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
 
@@ -71,11 +87,14 @@ void GameMode::GameLoop()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(prog->GetProgram());
+        glUniformMatrix4fv(glGetUniformLocation(prog->GetProgram(), "Transform"),
+                                                    1, GL_FALSE, &Transform[0][0]);
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    delete triangle;
+    delete block;
 }

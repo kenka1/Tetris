@@ -1,11 +1,13 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "Screen/Screen.h"
 
 
 Screen::Screen():
-    window(nullptr)
+    window(nullptr), projection(glm::scale(glm::mat4(1.0f), glm::vec3(2.0 / width, 2.0 / height, 0.0)))
 {
     initialize();
 }

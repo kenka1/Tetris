@@ -2,6 +2,7 @@
 
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
 
 #pragma once
 
@@ -20,11 +21,13 @@ public:
     Screen();
     ~Screen();
 
-    GLFWwindow* GetWindow() const {return window;}
+    inline GLFWwindow* GetWindow() const {return window;}
+    inline glm::mat4 GetProjection() const {return projection;}
 private:
     int16_t width = ScreenCONST::WIDTH;
     int16_t height = ScreenCONST::HEIGHT;
     GLFWwindow* window;
+    glm::mat4 projection;
     void initialize();
     static void size_callback(GLFWwindow*, int, int);
     static void key_callback(GLFWwindow*, int, int, int, int);
