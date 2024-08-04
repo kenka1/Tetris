@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 
 #pragma once
-
+class Shape;
 struct ScreenCONST
 {
     static const int VERSION_MAJOR = 4;
@@ -23,6 +23,8 @@ public:
 
     inline GLFWwindow* GetWindow() const {return window;}
     inline glm::mat4 GetProjection() const {return projection;}
+
+    void callMove(Shape*);
 private:
     int16_t width = ScreenCONST::WIDTH;
     int16_t height = ScreenCONST::HEIGHT;

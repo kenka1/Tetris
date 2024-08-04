@@ -16,6 +16,9 @@ public:
     void Rotate(const glm::vec3&);
     void Translate(const glm::vec3&);
     void UpdateTransform();
+
+    void move(int);
+
 private:
     GLuint vao;
     GLuint vbo;

@@ -4,7 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Screen/Screen.h"
-
+#include "Shape/Shape.h"
 
 Screen::Screen():
     window(nullptr), projection(glm::scale(glm::mat4(1.0f), glm::vec3(2.0 / width, 2.0 / height, 0.0)))
@@ -61,4 +61,15 @@ void Screen::key_callback(GLFWwindow* window, int key, int scancode, int action,
 {
     if(key == GLFW_KEY_ESCAPE)
         glfwSetWindowShouldClose(window, 1);
+}
+
+void Screen::callMove(Shape* obj)
+{
+    if(glfwGetKey(window, GLFW_KEY_D) == 1)
+        obj->move(0);
+    if(glfwGetKey(window, GLFW_KEY_A) == 1)
+        obj->move(1);
+    if(glfwGetKey(window, GLFW_KEY_S) == 1)
+        obj->move(2);
+    obj->UpdateTransform();
 }

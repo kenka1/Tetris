@@ -52,7 +52,8 @@ void GameMode::GameLoop()
     double LastFrame = 0.0;
     double CurrentFrame = 0.0;
     float FPS = 0.0;
-    float temp_inc = 0.0;
+    float time = 0.0;
+    float time_move = 0.0;
     float temp_fps = 0.0;
     while(!glfwWindowShouldClose(window))
     {
@@ -60,15 +61,25 @@ void GameMode::GameLoop()
         DeltaTime = CurrentFrame - LastFrame;
         LastFrame = CurrentFrame;
 
-        if(temp_inc <= 1.0)
+        if(time_move <= 0.1f)
         {
-            temp_inc += DeltaTime;
+            time_move += DeltaTime;
+        }
+        else
+        {
+            GameScreen->callMove(block);
+            time_move = 0.0f;
+        }
+
+        if(time <= 1.0f)
+        {
+            time += DeltaTime;
             ++temp_fps;
         }
         else
         {
             FPS = temp_fps;
-            temp_inc = 0.0;
+            time = 0.0;
             temp_fps = 0.0;
 
             CurrentPos = block->GetTranslate();
@@ -82,7 +93,6 @@ void GameMode::GameLoop()
         Transform = Proj * Model;
 
         std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
-
         glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 

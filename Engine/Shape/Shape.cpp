@@ -53,3 +53,24 @@ void Shape::UpdateTransform()
     transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
     transform = glm::scale(transform, scale);
 }
+
+void Shape::move(int call)
+{
+    float step = 25.0f;
+    glm::vec3 pos = translate;
+    switch(call)
+    {
+    case 0:
+        pos.x += step;
+        Translate(pos);
+        break;
+    case 1:
+        pos.x -= step;
+        Translate(pos);
+        break;
+    case 2:
+        pos.y -= step;
+        Translate(pos);
+        break;
+    }
+}
