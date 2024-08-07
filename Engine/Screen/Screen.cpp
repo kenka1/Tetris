@@ -71,5 +71,7 @@ void Screen::callMove(Shape* obj)
         obj->move(1);
     if(glfwGetKey(window, GLFW_KEY_S) == 1)
         obj->move(2);
+    if(glfwGetKey(window, GLFW_KEY_W) == 1)
+        obj->move(3);
     obj->UpdateTransform();
 }

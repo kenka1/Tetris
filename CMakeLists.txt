@@ -8,14 +8,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 
 add_executable(a 
-        ${CMAKE_SOURCE_DIR}/Tetris/src/main.cpp)
+        ${CMAKE_SOURCE_DIR}/Tetris/Source/main.cpp)
 
 target_include_directories(a
         PRIVATE
-        ${CMAKE_SOURCE_DIR}/External/include)
-
-target_include_directories(a
-        PRIVATE
+        ${CMAKE_SOURCE_DIR}/External/include
+        ${CMAKE_SOURCE_DIR}/Tetrus/Source
         ${CMAKE_SOURCE_DIR}/Engine)
 
 # include(FetchContent)
@@ -36,10 +34,12 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/External/glfw-3.4)
 add_subdirectory(${CMAKE_SOURCE_DIR}/External/glad)
 add_subdirectory(${CMAKE_SOURCE_DIR}/External/glm)
 add_subdirectory(${CMAKE_SOURCE_DIR}/Engine)
+add_subdirectory(${CMAKE_SOURCE_DIR}/Tetris)
 
 target_link_libraries(a
         PRIVATE
-        "Engine")
+        "Engine"
+        "TetrisSource")
 
 target_link_libraries(a
         PRIVATE

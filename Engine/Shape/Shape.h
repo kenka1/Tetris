@@ -1,14 +1,21 @@
+#pragma once
+
+#include <cstdint>
+
 #include "glm/glm.hpp"
 #include "glad/gl.h"
-
-#pragma once
 
 class Shape
 {
 public:
     Shape();
     ~Shape();
+
+    void StoreData(GLsizeiptr, const void*);
+    void StoreIndices(GLsizeiptr, const void*);
+
     inline GLuint GetVao() const {return vao;}
+    inline GLuint GetVbo() const {return vbo;}
     inline glm::vec3 GetTranslate() const {return translate;}
     inline glm::mat4 GetTransform() const {return transform;}
 
@@ -19,13 +26,16 @@ public:
 
     void move(int);
 
-private:
+protected:
+    u_char id;
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
-
+private:
     glm::vec3 scale;
     glm::vec3 rotation;
     glm::vec3 translate;
     glm::mat4 transform;
+
+    void UpdateID();
 };

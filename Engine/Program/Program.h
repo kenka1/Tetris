@@ -1,8 +1,8 @@
+#pragma once
+
 #include <filesystem>
 
 #include "glad/gl.h"
-
-#pragma once
 
 class Program
 {

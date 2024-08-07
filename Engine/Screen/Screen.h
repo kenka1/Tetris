@@ -1,10 +1,11 @@
+#pragma once
+
 #include <cstdint>
 
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 
-#pragma once
 class Shape;
 struct ScreenCONST
 {
@@ -12,7 +13,7 @@ struct ScreenCONST
     static const int VERSION_MINOR = 6;
     static const int OPENGL_PROFILE = GLFW_OPENGL_CORE_PROFILE;
     static const int16_t WIDTH = 500;
-    static const int16_t HEIGHT = 800;
+    static const int16_t HEIGHT = 1000;
 };
 
 class Screen

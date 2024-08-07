@@ -11,8 +11,6 @@ add_library(Engine
 
 target_include_directories(Engine
     PUBLIC
-    ${CMAKE_SOURCE_DIR}/Engine)
-
-target_include_directories(Engine
-    PUBLIC
-    ${CMAKE_SOURCE_DIR}/External/include)
+    ${CMAKE_SOURCE_DIR}/Engine
+    ${CMAKE_SOURCE_DIR}/External/include
+    ${CMAKE_SOURCE_DIR}/Tetris/Source)
