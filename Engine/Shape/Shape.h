@@ -26,12 +26,12 @@ public:
 
     void move(int);
 
-protected:
+private:
     u_char id;
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
-private:
+
     glm::vec3 scale;
     glm::vec3 rotation;
     glm::vec3 translate;

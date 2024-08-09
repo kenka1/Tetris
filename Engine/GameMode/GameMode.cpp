@@ -5,6 +5,7 @@
 
 #include "GameMode/GameMode.h"
 #include "Screen/Screen.h"
+#include "GameState/GameState.h"
 #include "Shape/Shape.h"
 #include "Program/Program.h"
 
@@ -76,7 +77,6 @@ void GameMode::GameLoop()
         DeltaTime = CurrentFrame - LastFrame;
         LastFrame = CurrentFrame;
 
-
         // make for block individually
         if(time_move <= 0.1f)
         {
@@ -105,6 +105,8 @@ void GameMode::GameLoop()
             // block->UpdateTransform();
             std::cout << "MOVE" << std::endl;
         }
+
+        
 
         Model = block->GetTransform();
         Transform = Proj * Model;
