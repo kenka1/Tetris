@@ -15,7 +15,7 @@ public:
     void StartGame();
 private:
     Screen* GameScreen;
-    GameState* GameState;
+    GameState* States;
     Program* prog;
     double DeltaTime;
     std::vector<Shape*> Buffer;

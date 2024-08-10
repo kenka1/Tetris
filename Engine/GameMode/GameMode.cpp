@@ -14,7 +14,9 @@
 
 GameMode::GameMode():
     GameScreen(new Screen), prog(nullptr), DeltaTime(0.0)
-{}
+{
+    std::cout << "Contructor GameMode" << std::endl;
+}
 
 GameMode::~GameMode()
 {
@@ -106,17 +108,13 @@ void GameMode::GameLoop()
             std::cout << "MOVE" << std::endl;
         }
 
-        
-
-        Model = block->GetTransform();
-        Transform = Proj * Model;
-
         // std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
         glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(prog->GetProgram());
-
+        Model = block->GetTransform();
+        Transform = Proj * Model;
         glBindVertexArray(block->GetVao());
         glUniformMatrix4fv(glGetUniformLocation(prog->GetProgram(), "Transform"), 
                                                     1, GL_FALSE, &Transform[0][0]);

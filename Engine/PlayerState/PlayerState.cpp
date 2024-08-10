@@ -1,7 +1,7 @@
 #include "PlayerState/PlayerState.h"
 
 PlayerState::PlayerState():
-    id(-1)
+    id(-1), stop(false)
 {}
 
 int16_t PlayerState::CalculateID(const glm::vec3& position)

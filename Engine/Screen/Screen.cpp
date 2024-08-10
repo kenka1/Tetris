@@ -9,6 +9,7 @@
 Screen::Screen():
     window(nullptr), projection(glm::scale(glm::mat4(1.0f), glm::vec3(2.0 / width, 2.0 / height, 0.0)))
 {
+    std::cout << "Constructor Screen" << std::endl;
     initialize();
 }
 

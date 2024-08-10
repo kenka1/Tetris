@@ -4,8 +4,9 @@
 
 #include "glm/glm.hpp"
 #include "glad/gl.h"
+#include "PlayerState/PlayerState.h"
 
-class Shape
+class Shape: public PlayerState
 {
 public:
     Shape();
@@ -27,7 +28,6 @@ public:
     void move(int);
 
 private:
-    u_char id;
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
@@ -36,6 +36,4 @@ private:
     glm::vec3 rotation;
     glm::vec3 translate;
     glm::mat4 transform;
-
-    void UpdateID();
 };

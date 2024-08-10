@@ -7,6 +7,7 @@
 
 Program::Program(const std::filesystem::path& vert_path, const std::filesystem::path& frag_path)
 {
+    std::cout << "Constructor Prog" << std::endl;
     GLuint vert_shader = CompileShader(vert_path, GL_VERTEX_SHADER);
     GLuint frag_shader = CompileShader(frag_path, GL_FRAGMENT_SHADER);
     LinkProgram(vert_shader, frag_shader);

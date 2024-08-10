@@ -5,8 +5,9 @@
 #include "Shape/Shape.h"
 
 Shape::Shape():
-    id(255), scale(1.0f), rotation(0.0f), translate(0.0f), transform(1.0f)
+    scale(1.0f), rotation(0.0f), translate(0.0f), transform(1.0f)
 {
+    std::cout << "Constructor Shape" << std::endl;
     glCreateVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
@@ -58,15 +59,6 @@ void Shape::UpdateTransform()
     transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
     transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
     transform = glm::scale(transform, scale);
-    UpdateID();
-}
-
-void Shape::UpdateID()
-{
-    u_char X = (translate.x + 250) / 50;
-    u_char Y = (translate.y + 500) / 50;
-    id = 10 * Y + X;
-    std::cout << "ID : " << static_cast<int>(id) << std::endl;
 }
 
 void Shape::move(int call)
