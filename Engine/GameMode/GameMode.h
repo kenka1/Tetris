@@ -5,7 +5,8 @@
 class Screen;
 class GameState;
 class Program;
-class Shape;
+class PlayerState;
+class PlayerController;
 
 class GameMode
 {
@@ -13,14 +14,18 @@ public:
     GameMode();
     ~GameMode();
     void StartGame();
+
+    inline GameState* GetGameState() {return _GameState;}
+    inline PlayerController* GetPlayerController() {return _PlayerController;}
 private:
-    Screen* GameScreen;
-    GameState* States;
-    Program* prog;
+    Screen* _GameScreen;
+    PlayerController* _PlayerController;
+    PlayerState* _PlayerState;
+    GameState* _GameState;
+    Program* _Program;
     double DeltaTime;
-    std::vector<Shape*> Buffer;
 
     void GameLoop();
-    void InitProgram();
+    void Initialization();
     void CalculateDeltaTime(); // refactoring::implement
 };

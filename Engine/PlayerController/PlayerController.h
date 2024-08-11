@@ -1,16 +1,18 @@
 #pragma once
 
-class Shape;
+class Actor;
 class GameMode;
 
 class PlayerController
 {
 public:
-    PlayerController(Shape*, GameMode*);
+    PlayerController(GameMode*);
     ~PlayerController() = default;
 
+    inline void SetPlayer(Actor* target) {player = target;}
+    inline Actor* GetPlayer() const {return player;}
     void Check();
 private:
-    Shape* player;
     GameMode* game;
+    Actor* player;
 };

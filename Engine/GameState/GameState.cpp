@@ -2,15 +2,19 @@
 #include "Shape/Shape.h"
 
 GameState::GameState():
-    Grid(200)
+    Grid(200), size(0)
 {}
 
 GameState::~GameState()
 {
-    Grid.clear();
+    for(int i = 0; i < 200; ++i)
+    {
+        if(Grid[i] != nullptr)
+            delete Grid[i];
+    }
 }
 
-void GameState::AddToGrid(Shape* target, uint8_t index)
+void GameState::AddToGrid(Actor* target, uint8_t index)
 {
     Grid[index] = target;
 }

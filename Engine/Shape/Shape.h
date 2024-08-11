@@ -6,7 +6,7 @@
 #include "glad/gl.h"
 #include "PlayerState/PlayerState.h"
 
-class Shape: public PlayerState
+class Shape
 {
 public:
     Shape();

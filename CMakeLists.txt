@@ -34,12 +34,10 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/External/glfw-3.4)
 add_subdirectory(${CMAKE_SOURCE_DIR}/External/glad)
 add_subdirectory(${CMAKE_SOURCE_DIR}/External/glm)
 add_subdirectory(${CMAKE_SOURCE_DIR}/Engine)
-add_subdirectory(${CMAKE_SOURCE_DIR}/Tetris)
 
 target_link_libraries(a
         PRIVATE
-        "Engine"
-        "TetrisSource")
+        "Engine")
 
 target_link_libraries(a
         PRIVATE
