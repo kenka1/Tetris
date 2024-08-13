@@ -64,15 +64,16 @@ void Screen::key_callback(GLFWwindow* window, int key, int scancode, int action,
         glfwSetWindowShouldClose(window, 1);
 }
 
-void Screen::callMove(Shape* obj)
+int8_t Screen::Move()
 {
+    int8_t index = -1;
     if(glfwGetKey(window, GLFW_KEY_D) == 1)
-        obj->move(0);
+        index = 0;
     if(glfwGetKey(window, GLFW_KEY_A) == 1)
-        obj->move(1);
+        index = 1;
     if(glfwGetKey(window, GLFW_KEY_S) == 1)
-        obj->move(2);
+        index = 2;
     if(glfwGetKey(window, GLFW_KEY_W) == 1)
-        obj->move(3);
-    obj->UpdateTransform();
+        index = 3;
+    return index;
 }

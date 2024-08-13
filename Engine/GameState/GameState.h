@@ -11,8 +11,9 @@ public:
     GameState();
     ~GameState();
 
-    void AddToGrid(Actor*, uint8_t);
-    bool CheckCell(uint8_t);
+    void AddToGrid(Actor*, int16_t);
+    bool CheckCell(int16_t);
+    inline std::vector<Actor*>& GetGrid() {return Grid;}
 private:
     std::vector<Actor*> Grid;
     size_t size;

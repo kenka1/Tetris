@@ -25,7 +25,7 @@ public:
     inline GLFWwindow* GetWindow() const {return window;}
     inline glm::mat4 GetProjection() const {return projection;}
 
-    void callMove(Shape*);
+    int8_t Move();
 private:
     int16_t width = ScreenCONST::WIDTH;
     int16_t height = ScreenCONST::HEIGHT;

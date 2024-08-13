@@ -27,5 +27,6 @@ private:
 
     void GameLoop();
     void Initialization();
+    void Render();
     void CalculateDeltaTime(); // refactoring::implement
 };

@@ -25,7 +25,7 @@ public:
     void Translate(const glm::vec3&);
     void UpdateTransform();
 
-    void move(int);
+    glm::vec3 move(int8_t);
 
 private:
     GLuint vao;

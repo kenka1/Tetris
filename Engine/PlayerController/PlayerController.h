@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 class Actor;
 class GameMode;
 
@@ -11,7 +13,6 @@ public:
 
     inline void SetPlayer(Actor* target) {player = target;}
     inline Actor* GetPlayer() const {return player;}
-    void Check();
 private:
     GameMode* game;
     Actor* player;

@@ -14,14 +14,16 @@ GameState::~GameState()
     }
 }
 
-void GameState::AddToGrid(Actor* target, uint8_t index)
+void GameState::AddToGrid(Actor* target, int16_t index)
 {
     Grid[index] = target;
 }
 
-bool GameState::CheckCell(uint8_t index)
+bool GameState::CheckCell(int16_t index)
 {
-    if(Grid[index] == nullptr)
-        return false;
-    return true;
+    if(index >= 200 || index < 0)
+        return true;
+    if(Grid[index] != nullptr)
+        return true;
+    return false;
 }

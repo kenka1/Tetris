@@ -9,8 +9,3 @@ PlayerController::PlayerController(GameMode* game):
 {
     std::cout << "Contructor PlayerController" << std::endl;
 }
-
-void PlayerController::Check()
-{
-
-}
