@@ -7,6 +7,7 @@ class GameState;
 class Program;
 class PlayerState;
 class PlayerController;
+class Actor;
 
 class GameMode
 {
@@ -27,6 +28,7 @@ private:
 
     void GameLoop();
     void Initialization();
+    void CreateNewPlayer(Actor*&);
     void Render();
     void CalculateDeltaTime(); // refactoring::implement
 };

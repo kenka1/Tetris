@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "GameState/GameState.h"
 #include "Shape/Shape.h"
 
@@ -21,6 +23,11 @@ void GameState::AddToGrid(Actor* target, int16_t index)
 
 bool GameState::CheckCell(int16_t index)
 {
+    //debug
+    for(int i = 0; i < 200; ++i)
+        if(Grid[i] != nullptr)
+            std::cout << "busy : " << i << std::endl;
+    //debug end
     if(index >= 200 || index < 0)
         return true;
     if(Grid[index] != nullptr)

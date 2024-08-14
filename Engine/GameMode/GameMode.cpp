@@ -34,20 +34,21 @@ GameMode::~GameMode()
 void GameMode::Initialization()
 {
     // Initialize Actor
-    Actor* block = new Actor;
-    block->StoreData(sizeof(obj::data), obj::data);
-    block->StoreIndices(sizeof(obj::indices), obj::indices);
-    block->Scale(50.0f);
-    block->UpdateTransform();
+    // Actor* block = new Actor;
+    // block->StoreData(sizeof(obj::data), obj::data);
+    // block->StoreIndices(sizeof(obj::indices), obj::indices);
+    // block->Scale(50.0f);
+    // block->UpdateTransform();
 
     // Initialize PlayerController
-    _PlayerController->SetPlayer(block);
+    // _PlayerController->SetPlayer(block);
 
     // Initialize PlayerState
-    int16_t id = _PlayerState->CalculateID(block->GetTranslate());
+    // int16_t id = _PlayerState->CalculateID(block->GetTranslate());
+
 
     // Initialize GameState
-    _GameState->AddToGrid(block, id);
+    // _GameState->AddToGrid(block, id);
 
     // Initialize program
     std::filesystem::path vert_path = std::filesystem::current_path();
@@ -61,9 +62,25 @@ void GameMode::Initialization()
     
 }
 
+void GameMode::CreateNewPlayer(Actor*& player)
+{
+    std::cout << "Creat new actor" << std::endl;
+    player = new Actor;
+    player->StoreData(sizeof(obj::data), obj::data);
+    player->StoreIndices(sizeof(obj::indices), obj::indices);
+    player->Scale(50.0f);
+    player->UpdateTransform();
+
+    _PlayerController->SetPlayer(player);
+    _PlayerState->SetStop(false);
+    int16_t id = _PlayerState->CalculateID(player->GetTranslate());
+    _PlayerState->SetID(id);
+    _GameState->AddToGrid(player, id);
+}
+
 void GameMode::Render()
 {
-    std::vector<Actor*> Grid = _GameState->GetGrid();
+    std::vector<Actor*>& Grid = _GameState->GetGrid();
     for(size_t i = 0; i < Grid.size(); ++i)
     {
         if(Grid[i] != nullptr)
@@ -71,7 +88,7 @@ void GameMode::Render()
             Actor* player = Grid[i];
             glm::mat4 Transform = _GameScreen->GetProjection() * player->GetTransform();
             glBindVertexArray(player->GetVao());
-            glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "Transform"), 
+            glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
                                                         1, GL_FALSE, &Transform[0][0]);
             glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.7f, 0.3f, 0.2f);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
@@ -99,6 +116,7 @@ void GameMode::GameLoop()
     Grid2->StoreIndices(sizeof(grid::indices), grid::indices);
 
     GLFWwindow* window = _GameScreen->GetWindow();
+    Actor* player = nullptr;
 
     glm::mat4 Proj = _GameScreen->GetProjection();
     glm::mat4 Model(1.0f);
@@ -114,15 +132,16 @@ void GameMode::GameLoop()
     // float temp_fps = 0.0;
     while(!glfwWindowShouldClose(window))
     {
+        // Calculate DeltaTime
         CurrentFrame = glfwGetTime();
         DeltaTime = CurrentFrame - LastFrame;
         LastFrame = CurrentFrame;
 
-        //GAME UPDATE
-        Actor* player = _PlayerController->GetPlayer();
+        if(player == nullptr)
+            std::cout << "PLAYER IS NULLPTR" << std::endl;
 
-        // make for block individually
-        if(_PlayerState->GetStop() != true)
+        // Game update
+        if(player != nullptr && _PlayerState->GetStop() != true)
         {
             glm::vec3 Offset(0.0f);
             if(time_move <= 0.1f)
@@ -132,9 +151,10 @@ void GameMode::GameLoop()
             else
             {
                 int8_t call = _GameScreen->Move();
+                time_move = 0.0f;
                 if(call != -1)
                 {
-                    Offset = player->move(call);
+                    Offset = player->Move(call);
                     int16_t id = _PlayerState->CalculateID(Offset);
                     std::cout << "next ID : " << id << std::endl;
                     if(_GameState->CheckCell(id))
@@ -149,25 +169,14 @@ void GameMode::GameLoop()
                         _PlayerState->SetID(id);
                         _GameState->AddToGrid(player, id);
                         player->UpdateTransform();
-                        time_move = 0.0f;
                     }
                     std::cout << "ID : " << _PlayerState->GetID() << std::endl;
                 }
-
             }
         }
         else
         {
-            // Create new Actor
-            Actor* new_block = new Actor;
-            new_block->StoreData(sizeof(obj::data), obj::data);
-            new_block->StoreIndices(sizeof(obj::indices), obj::indices);
-            new_block->Scale(50.0f);
-            new_block->UpdateTransform();
-
-            _PlayerController->SetPlayer(new_block);
-            _PlayerState->SetStop(false);
-            player = _PlayerController->GetPlayer();
+            CreateNewPlayer(player);
         }
 
             // if(time <= 1.0f)
@@ -208,16 +217,16 @@ void GameMode::GameLoop()
 
         // Grid Render Start
         glBindVertexArray(Grid->GetVao());
-        glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "Transform"), 
+        glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
                                                     1, GL_FALSE, &StaticTransform[0][0]);
         glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.65f, 0.65f, 0.65f);
         glLineWidth(3.0f);
-        glUniform1i(glGetUniformLocation(_Program->GetProgram(), "grid_ID"), 0);
+        glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 0);
         glDrawElementsInstanced(GL_LINES, 2, GL_UNSIGNED_INT, nullptr, 9);
 
         glBindVertexArray(Grid2->GetVao());
         glLineWidth(3.0f);
-        glUniform1i(glGetUniformLocation(_Program->GetProgram(), "grid_ID"), 1);
+        glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 1);
         glDrawElementsInstanced(GL_LINES, 2, GL_UNSIGNED_INT, nullptr, 19);
         // Grid Render end
 
