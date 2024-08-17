@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 
-class Actor;
+class Shape;
 
 class GameState
 {
@@ -12,10 +12,11 @@ public:
     GameState();
     ~GameState();
 
-    void AddToGrid(Actor*, int16_t);
+    void AddToGrid(Shape*, int16_t);
     bool CheckCell(int16_t);
-    inline std::vector<Actor*>& GetGrid() {return Grid;}
+    void RemoveLine(int16_t);
+    inline std::vector<Shape*>& GetGrid() {return Grid;}
 private:
-    std::vector<Actor*> Grid;
+    std::vector<Shape*> Grid;
     size_t size;
 };

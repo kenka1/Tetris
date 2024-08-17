@@ -1,4 +1,5 @@
 #pragma once
+#include "Type/Types.h"
 
 #include <vector>
 
@@ -7,8 +8,7 @@ class GameState;
 class Program;
 class PlayerState;
 class PlayerController;
-class Actor;
-
+class BaseActor;
 class GameMode
 {
 public:
@@ -26,9 +26,11 @@ private:
     Program* _Program;
     double DeltaTime;
 
-    void GameLoop();
     void Initialization();
-    void CreateNewPlayer(Actor*&);
+    void GameLoop();
+
+    void MoveEvent(BaseActor* player);
+    void CreateNewPlayer(BaseActor*&);
     void Render();
     void CalculateDeltaTime(); // refactoring::implement
 };

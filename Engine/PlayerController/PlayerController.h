@@ -1,8 +1,9 @@
 #pragma once
+#include "Type/Types.h"
 
 #include <glm/glm.hpp>
 
-class Actor;
+class BaseActor;
 class GameMode;
 
 class PlayerController
@@ -11,9 +12,10 @@ public:
     PlayerController(GameMode*);
     ~PlayerController() = default;
 
-    inline void SetPlayer(Actor* target) {player = target;}
-    inline Actor* GetPlayer() const {return player;}
+    inline void SetPlayer(BaseActor* target) {player = target;}
+    inline BaseActor* GetPlayer() const {return player;}
+    glm::vec3 Move(int8_t) const;
 private:
     GameMode* game;
-    Actor* player;
+    BaseActor* player;
 };

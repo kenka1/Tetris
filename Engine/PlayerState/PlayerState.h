@@ -3,23 +3,24 @@
 #include <cstdint>
 #include <glm/glm.hpp>
 
+#include <vector>
+
 class GameMode;
-class Actor;
 
 class PlayerState
 {
 public:
     PlayerState(GameMode*);
 
-    inline void SetID(int16_t new_id) {id = new_id;}
+    void SetID(int16_t, size_t);
     inline void SetStop(bool flag) {stop = flag;}
 
-    inline int16_t GetID() const {return id;}
+    inline int16_t GetID(size_t index) const {return id[index];}
     inline bool GetStop() const {return stop;}
 
     int16_t CalculateID(const glm::vec3&);
 private:
     GameMode* game;
-    int16_t id;
+    std::vector<int16_t> id;
     bool stop;
 };
