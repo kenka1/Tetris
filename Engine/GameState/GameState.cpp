@@ -11,21 +11,22 @@ GameState::~GameState()
 {
     for(int i = 0; i < 200; ++i)
     {
-        if(Grid[i] != nullptr)
-            delete Grid[i];
+        if(Grid[i].Target != nullptr)
+            delete Grid[i].Target;
     }
 }
 
-void GameState::AddToGrid(Shape* target, int16_t index)
+void GameState::AddToGrid(Shape* target, int16_t index, int16_t ID)
 {
-    Grid[index] = target;
+    Grid[index].Target = target;
+    Grid[index].Player_ID = ID;
 }
 
-bool GameState::CheckCell(int16_t index)
+bool GameState::CheckCell(int16_t index, int16_t ID)
 {
     if(index >= 200 || index < 0)
         return true;
-    if(Grid[index] != nullptr)
+    if(Grid[index].Target != nullptr && Grid[index].Player_ID != ID)
         return true;
     return false;
 }
@@ -35,7 +36,7 @@ void GameState::RemoveLine(int16_t index)
     int16_t line_index = (index - index % 10) / 10;
     bool remove = true;
     for(int i = line_index * 10; i < line_index * 10 + 10; ++i)
-        if(Grid[i] == nullptr)
+        if(Grid[i].Target == nullptr)
             remove = false;
     std::cout << "LINE INDEX : " << line_index << std::endl;
     if(remove)
@@ -43,8 +44,10 @@ void GameState::RemoveLine(int16_t index)
         std::cout << "REMOVE LINE" << std::endl;
         for(int i = line_index * 10; i < line_index * 10 + 10; ++i)
         {
-            delete Grid[i];
-            Grid[i] = nullptr;
+            std::cout << "Remove Index : " << i << std::endl;
+            if(Grid[i].Target != nullptr)
+                delete Grid[i].Target;
+            ClearGrid(i);
         }
     }
 }

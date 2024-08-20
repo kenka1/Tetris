@@ -42,8 +42,6 @@ void GameMode::Initialization()
     frag_path.append("Engine/Shaders/shader.frag");
 
     _Program = new Program(vert_path, frag_path);
-
-    
 }
 
 void GameMode::StartGame()
@@ -68,10 +66,6 @@ void GameMode::GameLoop()
     BaseActor* player = nullptr;
 
     glm::mat4 Proj = _GameScreen->GetProjection();
-    glm::mat4 Model(1.0f);
-    glm::mat4 Transform(1.0f);
-    glm::mat4 StaticTransform(Proj);
-    glm::vec3 CurrentPos(0.0f);
 
     double LastFrame = 0.0;
     double CurrentFrame = 0.0;
@@ -132,21 +126,12 @@ void GameMode::GameLoop()
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(_Program->GetProgram());
 
-        // Model = player->GetTransform();
-        // Transform = Proj * Model;
-        // glBindVertexArray(player->GetVao());
-        // glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "Transform"), 
-        //                                             1, GL_FALSE, &Transform[0][0]);
-        // glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.7f, 0.3f, 0.2f);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-        // Render all objects in scene
         Render();
 
         // Grid Render Start
         glBindVertexArray(Grid->GetVao());
         glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
-                                                    1, GL_FALSE, &StaticTransform[0][0]);
+                                                    1, GL_FALSE, &Proj[0][0]);
         glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.65f, 0.65f, 0.65f);
         glLineWidth(3.0f);
         glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 0);
@@ -172,41 +157,62 @@ void GameMode::MoveEvent(BaseActor* player)
     int8_t call = _GameScreen->Move();
     if(call != -1)
     {
-        glm::vec3 Offset = _PlayerController->Move(call);
-        bool CantMove = true;
-        for(size_t i = 0; i < player->GetSize(); ++i)
-        {   
-            glm::vec3 pos = (*player)[i]->GetTranslate();
-            int16_t id = _PlayerState->CalculateID(pos + Offset);
-            std::cout << "next ID : " << id << std::endl;
-            if(_GameState->CheckCell(id))
-                CantMove = false;
+        //DEBUG
+        {
+            std::vector<PlayerInfo> Grid = _GameState->GetGrid();
+            for(int i = 0; i < Grid.size(); ++i)
+            {
+                if(Grid[i].Target != nullptr)
+                    std::cout << "busy : " << i << std::endl;
+            }
         }
 
-        if(CantMove)
+
+        glm::vec3 Offset = _PlayerController->Move(call);
+        bool IsMoving = true;
+        size_t N = player->GetSize();
+        int16_t Player_ID = _PlayerState->GetPlayerID();
+        std::cout << "Player_ID : " << Player_ID << std::endl;
+
+        for(size_t i = 0; i < N; ++i)
+        {   
+            Shape* target = (*player)[i];
+            glm::vec3 pos = target->GetTranslate();
+            int16_t Grid_ID = _PlayerState->CalculateID(pos + Offset);
+
+            std::cout << "Grid ID : " << Grid_ID << std::endl;
+            if(_GameState->CheckCell(Grid_ID, Player_ID))
+                IsMoving = false;
+        }
+
+        if(IsMoving)
         {
-            for(size_t i = 0; i < player->GetSize(); ++i)
+            for(size_t i = 0; i < N; ++i)
             {
-                glm::vec3 pos = (*player)[i]->GetTranslate();
-                int16_t id = _PlayerState->CalculateID(pos + Offset);
-                _PlayerState->SetID(id, i);
-                _GameState->AddToGrid((*player)[i], id);
-                _GameState->RemoveLine(_PlayerState->GetID(i));
-                _PlayerState->SetStop(true);
+                int16_t Old_ID = _PlayerState->GetID(i);
+                _GameState->ClearGrid(Old_ID);
+            }
+
+            for(size_t i = 0; i < N; ++i)
+            {
+                Shape* target = (*player)[i];
+                glm::vec3 pos = target->GetTranslate() + Offset;
+                int16_t Grid_ID = _PlayerState->CalculateID(pos);
+
+                target->Translate(pos);
+                target->UpdateTransform();
+                _PlayerState->SetID(i, Grid_ID);
+                _GameState->AddToGrid(target, Grid_ID, Player_ID);
             }
         }
         else
         {
-            for(size_t i = 0; i < player->GetSize(); ++i)
+            for(size_t i = 0; i < N; ++i)
             {
-                glm::vec3 pos = (*player)[i]->GetTranslate();
-                (*player)[i]->Translate(pos + Offset);
-                int16_t id = _PlayerState->CalculateID(pos + Offset);
-                _GameState->AddToGrid(nullptr, _PlayerState->GetID(i));
-                _PlayerState->SetID(id, i);
-                _GameState->AddToGrid((*player)[i], id);
-                (*player)[i]->UpdateTransform();
-                std::cout << "ID : " << _PlayerState->GetID(i) << std::endl;
+                int16_t Grid_ID = _PlayerState->GetID(i);
+
+                _PlayerState->SetStop(true);
+                _GameState->RemoveLine(Grid_ID);
             }
         }
     }
@@ -214,28 +220,29 @@ void GameMode::MoveEvent(BaseActor* player)
 
 void GameMode::CreateNewPlayer(BaseActor*& player)
 {
-    std::cout << "Creat new actor" << std::endl;
     player = new Actor<EForm::Cube>();
+    int16_t Player_ID = player->GetID();
 
     _PlayerController->SetPlayer(player);
     _PlayerState->SetStop(false);
+    _PlayerState->SetPlayerID(Player_ID);
 
     for(size_t i = 0; i < player->GetSize(); ++i)
     {
-        int16_t id = _PlayerState->CalculateID((*player)[i]->GetTranslate());
-        _PlayerState->SetID(id, i);
-        _GameState->AddToGrid((*player)[i], id);
+        int16_t Grid_ID = _PlayerState->CalculateID((*player)[i]->GetTranslate());
+        _PlayerState->SetID(i, Grid_ID);
+        _GameState->AddToGrid((*player)[i], Grid_ID, Player_ID);
     }
 }
 
 void GameMode::Render()
 {
-    std::vector<Shape*>& Grid = _GameState->GetGrid();
+    std::vector<PlayerInfo>& Grid = _GameState->GetGrid();
     for(size_t i = 0; i < Grid.size(); ++i)
     {
-        if(Grid[i] != nullptr)
+        if(Grid[i].Target != nullptr)
         {
-            Shape* player = Grid[i];
+            Shape* player = Grid[i].Target;
             glm::mat4 Transform = _GameScreen->GetProjection() * player->GetTransform();
             glBindVertexArray(player->GetVao());
             glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 

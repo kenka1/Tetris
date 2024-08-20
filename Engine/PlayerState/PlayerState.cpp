@@ -4,13 +4,8 @@
 #include "Actor/Actor.h"
 
 PlayerState::PlayerState(GameMode* game):
-    game(game), id(4, -1), stop(false)
+    game(game), Grid_ID(4, -1), stop(false)
 {}
-
-void PlayerState::SetID(int16_t new_id, size_t index)
-{
-    id[index] = new_id;
-}
 
 int16_t PlayerState::CalculateID(const glm::vec3& position)
 {

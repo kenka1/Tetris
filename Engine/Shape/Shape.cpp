@@ -20,6 +20,7 @@ Shape::Shape():
 
 Shape::~Shape()
 {
+    std::cout << "Destructor Shape" << std::endl;
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
 }
