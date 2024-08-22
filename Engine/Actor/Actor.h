@@ -22,32 +22,94 @@ public:
 
     static int16_t ID;
 private:
+    size_t size = 4;
     std::vector<Shape*> actors;
-    size_t size;
     EForm form = Form;
 
     Shape* InitializeDefaultActor();
+    void Square();
+    void Straight();
+    void T();
+    void L();
+    void Skew();
 };
 
 template<EForm Form>
 Actor<Form>::Actor():
-    actors(4), size(4)
+    actors(size)
 {
     ++ID;
     std::cout << "Constructor Actor" << std::endl;
-    if(form == EForm::Cube)
+    for(size_t i = 0; i < size; ++i)
+        actors[i] = InitializeDefaultActor();
+    if(form == EForm::Square)
     {
-        for(size_t i = 0; i < 4; ++i)
-            actors[i] = InitializeDefaultActor();
-
-        actors[1]->Translate(glm::vec3(50.0f, 0.0f, 0.0f));
-        actors[2]->Translate(glm::vec3(50.0f, 50.0f, 0.0f));
-        actors[3]->Translate(glm::vec3(0.0f, 50.0f, 0.0f));
-
-        for(size_t i = 0; i < 4; ++i)
-            actors[i]->UpdateTransform();
+        Square();
+    }
+    if(form == EForm::Straight)
+    {
+        Straight();
+    }
+    if(form == EForm::T)
+    {
+        T();
+    }
+    if(form == EForm::L)
+    {
+        L();
+    }
+    if(form == EForm::Skew)
+    {
+        Skew();
     }
 
+    for(size_t i = 0; i < size; ++i)
+        actors[i]->UpdateTransform();
+}
+
+template<EForm Form>
+void Actor<Form>::Square()
+{
+    actors[0]->Translate(glm::vec3(-50.0f, 500.0f, 0.0f));
+    actors[1]->Translate(glm::vec3(-50.0f, 550.0f, 0.0f));
+    actors[2]->Translate(glm::vec3(0.0f, 550.0f, 0.0f));
+    actors[3]->Translate(glm::vec3(0.0f, 500.0f, 0.0f));
+}
+
+template<EForm Form>
+void Actor<Form>::Straight()
+{
+    actors[0]->Translate(glm::vec3(0.0f, 500.0f, 0.0f));
+    actors[1]->Translate(glm::vec3(0.0f, 550.0f, 0.0f));
+    actors[2]->Translate(glm::vec3(0.0f, 600.0f, 0.0f));
+    actors[3]->Translate(glm::vec3(0.0f, 650.0f, 0.0f));
+}
+
+template<EForm Form>
+void Actor<Form>::T()
+{
+    actors[0]->Translate(glm::vec3(0.0f, 500.0f, 0.0f));
+    actors[1]->Translate(glm::vec3(0.0f, 550.0f, 0.0f));
+    actors[2]->Translate(glm::vec3(-50.0f, 550.0f, 0.0f));
+    actors[3]->Translate(glm::vec3(50.0f, 550.0f, 0.0f));    
+}
+
+template<EForm Form>
+void Actor<Form>::L()
+{
+    actors[0]->Translate(glm::vec3(0.0f, 500.0f, 0.0f));
+    actors[1]->Translate(glm::vec3(-50.0f, 500.0f, 0.0f));
+    actors[2]->Translate(glm::vec3(-50.0f, 550.0f, 0.0f));
+    actors[3]->Translate(glm::vec3(-50.0f, 600.0f, 0.0f));    
+}
+
+template<EForm Form>
+void Actor<Form>::Skew()
+{
+    actors[0]->Translate(glm::vec3(0.0f, 500.0f, 0.0f));
+    actors[1]->Translate(glm::vec3(0.0f, 550.0f, 0.0f));
+    actors[2]->Translate(glm::vec3(-50.0f, 550.0f, 0.0f));
+    actors[3]->Translate(glm::vec3(-50.0f, 600.0f, 0.0f));    
 }
 
 template<EForm Form>

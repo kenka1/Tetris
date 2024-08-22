@@ -13,7 +13,7 @@ public:
     ~PlayerController() = default;
 
     inline void SetPlayer(BaseActor* target) {player = target;}
-    inline BaseActor* GetPlayer() const {return player;}
+    inline BaseActor* GetPlayer() {return player;}
     glm::vec3 Move(int8_t) const;
 private:
     GameMode* game;

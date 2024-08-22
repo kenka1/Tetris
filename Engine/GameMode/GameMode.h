@@ -2,6 +2,7 @@
 #include "Type/Types.h"
 
 #include <vector>
+#include <glm/glm.hpp>
 
 class Screen;
 class GameState;
@@ -28,9 +29,15 @@ private:
 
     void Initialization();
     void GameLoop();
-
-    void MoveEvent(BaseActor* player);
-    void CreateNewPlayer(BaseActor*&);
     void Render();
+
+    void MoveEvent();
+    void StepEvent();
+
+    bool CanMove();
+    void Move(const glm::vec3&);
+    void StopMove();
     void CalculateDeltaTime(); // refactoring::implement
+
+    void CreateNewPlayer(BaseActor*&);
 };

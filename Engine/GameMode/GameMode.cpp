@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
@@ -63,14 +64,14 @@ void GameMode::GameLoop()
     Grid2->StoreIndices(sizeof(grid::indices), grid::indices);
 
     GLFWwindow* window = _GameScreen->GetWindow();
-    BaseActor* player = nullptr;
+    BaseActor* player = _PlayerController->GetPlayer();
 
     glm::mat4 Proj = _GameScreen->GetProjection();
 
     double LastFrame = 0.0;
     double CurrentFrame = 0.0;
     // float FPS = 0.0;
-    // float time = 0.0;
+    float time_step = 0.0;
     float time_move = 0.0;
     // float temp_fps = 0.0;
     while(!glfwWindowShouldClose(window))
@@ -86,38 +87,30 @@ void GameMode::GameLoop()
         // Game update
         if(player != nullptr && _PlayerState->GetStop() != true)
         {
+
             if(time_move <= 0.1f)
             {
                 time_move += DeltaTime;
             }
             else
             {                
-                MoveEvent(player);
+                MoveEvent();
                 time_move = 0.0f;
+            }
+            if(time_step <= 0.5f)
+            {
+                time_step += DeltaTime;
+            }
+            else
+            {
+                StepEvent();
+                time_step = 0.0f;
             }
         }
         else
         {
             CreateNewPlayer(player);
         }
-
-            // if(time <= 1.0f)
-            // {
-            //     time += DeltaTime;
-            //     ++temp_fps;
-            // }
-            // else
-            // {
-            //     FPS = temp_fps;
-            //     time = 0.0;
-            //     temp_fps = 0.0;
-
-            //     CurrentPos = player->GetTranslate();
-            //     CurrentPos.y -= 50.0f;
-            //     // block->Translate(CurrentPos);
-            //     // block->UpdateTransform();
-            //     std::cout << "MOVE" << std::endl;
-            // }
 
 
         // RENDERING
@@ -152,75 +145,128 @@ void GameMode::GameLoop()
 }
 
 // FIX 3x LOOPS !!!!
-void GameMode::MoveEvent(BaseActor* player)
+void GameMode::MoveEvent()
 {
     int8_t call = _GameScreen->Move();
     if(call != -1)
     {
-        //DEBUG
-        {
-            std::vector<PlayerInfo> Grid = _GameState->GetGrid();
-            for(int i = 0; i < Grid.size(); ++i)
-            {
-                if(Grid[i].Target != nullptr)
-                    std::cout << "busy : " << i << std::endl;
-            }
-        }
-
-
-        glm::vec3 Offset = _PlayerController->Move(call);
-        bool IsMoving = true;
-        size_t N = player->GetSize();
+        glm::vec3 offset = _PlayerController->Move(call);
         int16_t Player_ID = _PlayerState->GetPlayerID();
-        std::cout << "Player_ID : " << Player_ID << std::endl;
+        // std::cout << "Player_ID : " << Player_ID << std::endl;
 
-        for(size_t i = 0; i < N; ++i)
-        {   
-            Shape* target = (*player)[i];
-            glm::vec3 pos = target->GetTranslate();
-            int16_t Grid_ID = _PlayerState->CalculateID(pos + Offset);
-
-            std::cout << "Grid ID : " << Grid_ID << std::endl;
-            if(_GameState->CheckCell(Grid_ID, Player_ID))
-                IsMoving = false;
-        }
-
+        bool IsMoving = CanMove();
         if(IsMoving)
         {
-            for(size_t i = 0; i < N; ++i)
-            {
-                int16_t Old_ID = _PlayerState->GetID(i);
-                _GameState->ClearGrid(Old_ID);
-            }
-
-            for(size_t i = 0; i < N; ++i)
-            {
-                Shape* target = (*player)[i];
-                glm::vec3 pos = target->GetTranslate() + Offset;
-                int16_t Grid_ID = _PlayerState->CalculateID(pos);
-
-                target->Translate(pos);
-                target->UpdateTransform();
-                _PlayerState->SetID(i, Grid_ID);
-                _GameState->AddToGrid(target, Grid_ID, Player_ID);
-            }
+            Move(offset);
         }
         else
         {
-            for(size_t i = 0; i < N; ++i)
-            {
-                int16_t Grid_ID = _PlayerState->GetID(i);
-
-                _PlayerState->SetStop(true);
-                _GameState->RemoveLine(Grid_ID);
-            }
+            StopMove();
         }
+    }
+}
+
+void GameMode::StepEvent()
+{
+    bool IsMoving = CanMove();
+    if(IsMoving)
+    {
+        Move(glm::vec3(0.0f, -50.0f, 0.0f));
+    }
+    else
+    {
+        StopMove();
+    }
+}
+
+bool GameMode::CanMove()
+{
+    BaseActor* player = _PlayerController->GetPlayer();
+    glm::vec3 Offset(0.0f, -50.0f, 0.0f);
+    size_t N = player->GetSize();
+    int16_t Player_ID = _PlayerState->GetPlayerID();
+
+    bool IsMoving = true;
+    for(size_t i = 0; i < N; ++i)
+    {   
+        Shape* target = (*player)[i];
+        glm::vec3 pos = target->GetTranslate();
+        int16_t Grid_ID = _PlayerState->CalculateID(pos + Offset);
+
+        // std::cout << "Grid ID : " << Grid_ID << std::endl;
+        if(_GameState->CheckCell(Grid_ID, Player_ID))
+            IsMoving = false;
+    }
+
+    return IsMoving;
+}
+
+void GameMode::Move(const glm::vec3& offset)
+{
+    BaseActor* player = _PlayerController->GetPlayer();
+    size_t N = player->GetSize();
+    int16_t Player_ID = _PlayerState->GetPlayerID();
+
+    for(size_t i = 0; i < N; ++i)
+    {
+        int16_t Old_ID = _PlayerState->GetID(i);
+        _GameState->ClearGrid(Old_ID);
+    }
+
+    for(size_t i = 0; i < N; ++i)
+    {
+        Shape* target = (*player)[i];
+        glm::vec3 pos = target->GetTranslate() + offset;
+        int16_t Grid_ID = _PlayerState->CalculateID(pos);
+
+        target->Translate(pos);
+        target->UpdateTransform();
+        _PlayerState->SetID(i, Grid_ID);
+        _GameState->AddToGrid(target, Grid_ID, Player_ID);
+    }
+}
+
+void GameMode::StopMove()
+{
+    BaseActor* player = _PlayerController->GetPlayer();
+    size_t N = player->GetSize();
+    for(size_t i = 0; i < N; ++i)
+    {
+        int16_t Grid_ID = _PlayerState->GetID(i);
+
+        _PlayerState->SetStop(true);
+        _GameState->RemoveLine(Grid_ID);
     }
 }
 
 void GameMode::CreateNewPlayer(BaseActor*& player)
 {
-    player = new Actor<EForm::Cube>();
+    
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution dis(0, 4);
+    int rand = dis(gen);
+
+    std::cout << "RAND : " << rand << std::endl;
+    switch(rand)
+    {
+    case 0:
+       player = new Actor<EForm::Square>();
+       break;
+    case 1:
+        player = new Actor<EForm::Straight>();
+        break;
+    case 2:
+        player = new Actor<EForm::T>();
+        break;
+    case 3:
+        player = new Actor<EForm::L>();
+        break;
+    case 4:
+        player = new Actor<EForm::Skew>();
+        break;
+    }
+
     int16_t Player_ID = player->GetID();
 
     _PlayerController->SetPlayer(player);
@@ -234,7 +280,6 @@ void GameMode::CreateNewPlayer(BaseActor*& player)
         _GameState->AddToGrid((*player)[i], Grid_ID, Player_ID);
     }
 }
-
 void GameMode::Render()
 {
     std::vector<PlayerInfo>& Grid = _GameState->GetGrid();

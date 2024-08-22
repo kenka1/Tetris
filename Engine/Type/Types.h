@@ -4,6 +4,9 @@
 
 enum class EForm : uint8_t
 {
-    Cube,
-    line
+    Square,
+    Straight,
+    T,
+    L,
+    Skew
 };

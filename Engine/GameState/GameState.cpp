@@ -3,8 +3,10 @@
 #include "GameState/GameState.h"
 #include "Shape/Shape.h"
 
+#include <glm/glm.hpp>
+
 GameState::GameState():
-    Grid(200), size(0)
+    Grid(210), size(0)
 {}
 
 GameState::~GameState()
@@ -24,7 +26,7 @@ void GameState::AddToGrid(Shape* target, int16_t index, int16_t ID)
 
 bool GameState::CheckCell(int16_t index, int16_t ID)
 {
-    if(index >= 200 || index < 0)
+    if(index < 0)
         return true;
     if(Grid[index].Target != nullptr && Grid[index].Player_ID != ID)
         return true;
@@ -48,6 +50,18 @@ void GameState::RemoveLine(int16_t index)
             if(Grid[i].Target != nullptr)
                 delete Grid[i].Target;
             ClearGrid(i);
+        }
+    }
+}
+
+void GameState::MoveLine(int16_t line_index)
+{
+    for(int i = line_index * 10; i < 200 - 10; ++i)
+    {
+        Shape* target = Grid[i + 10].Target;
+        if(target != nullptr)
+        {
+            Grid[i] = Grid[i + 10];
         }
     }
 }

@@ -70,32 +70,32 @@ int8_t Screen::Move()
     if(glfwGetKey(window, GLFW_KEY_D) == 1)
     {
         index = 0;
-        std::cout << "PRESSED D" << std::endl;
+        // std::cout << "PRESSED D" << std::endl;
     }
     if(glfwGetKey(window, GLFW_KEY_A) == 1)
     {
         index = 1;
-        std::cout << "PRESSED A" << std::endl;
+        // std::cout << "PRESSED A" << std::endl;
     }
     if(glfwGetKey(window, GLFW_KEY_S) == 1)
     {
         index = 2;
-        std::cout << "PRESSED S" << std::endl;
+        // std::cout << "PRESSED S" << std::endl;
     }
     if(glfwGetKey(window, GLFW_KEY_W) == 1)
     {
         index = 3;
-        std::cout << "PRESSED W" << std::endl;
+        // std::cout << "PRESSED W" << std::endl;
     }
     if(glfwGetKey(window, GLFW_KEY_S) == 1 && glfwGetKey(window, GLFW_KEY_D) == 1)
     {
         index = 4;
-        std::cout << "PRESSED S AND D" << std::endl;
+        // std::cout << "PRESSED S AND D" << std::endl;
     }
     if(glfwGetKey(window, GLFW_KEY_S) == 1 && glfwGetKey(window, GLFW_KEY_A) == 1)
     {
         index = 5;
-        std::cout << "PRESSED S AND D" << std::endl;
+        // std::cout << "PRESSED S AND D" << std::endl;
     }
     return index;
 }
