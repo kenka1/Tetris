@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "PlayerState/PlayerState.h"
 #include "GameMode/GameMode.h"
 #include "GameState/GameState.h"
@@ -5,7 +7,9 @@
 
 PlayerState::PlayerState(GameMode* game):
     game(game), Grid_ID(4, -1), stop(false)
-{}
+{
+    std::cout << "Contructor PlayerState" << std::endl;
+}
 
 int16_t PlayerState::CalculateID(const glm::vec3& position)
 {

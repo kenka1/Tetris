@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "GameState/GameState.h"
 #include "Shape/Shape.h"
@@ -6,8 +7,11 @@
 #include <glm/glm.hpp>
 
 GameState::GameState():
-    Grid(210), size(0)
-{}
+    Grid(210), size(0), Draw(5), Queue(0)
+{
+    std::cout << "Contructor GameState" << std::endl;
+    Draw = {EForm::Square, EForm::Straight, EForm::T, EForm::L, EForm::Skew};
+}
 
 GameState::~GameState()
 {
@@ -40,13 +44,13 @@ void GameState::RemoveLine(int16_t index)
     for(int i = line_index * 10; i < line_index * 10 + 10; ++i)
         if(Grid[i].Target == nullptr)
             remove = false;
-    std::cout << "LINE INDEX : " << line_index << std::endl;
+    // std::cout << "LINE INDEX : " << line_index << std::endl;
     if(remove)
     {
-        std::cout << "REMOVE LINE" << std::endl;
+        // std::cout << "REMOVE LINE" << std::endl;
         for(int i = line_index * 10; i < line_index * 10 + 10; ++i)
         {
-            std::cout << "Remove Index : " << i << std::endl;
+            // std::cout << "Remove Index : " << i << std::endl;
             if(Grid[i].Target != nullptr)
                 delete Grid[i].Target;
             ClearGrid(i);
@@ -64,4 +68,9 @@ void GameState::MoveLine(int16_t line_index)
             Grid[i] = Grid[i + 10];
         }
     }
+}
+
+void GameState::ResetDraw()
+{
+    std::swap<std::vector<EForm>>(Draw, Queue);
 }

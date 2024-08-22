@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <cstddef>
 
+#include "Type/Types.h"
+
 class Shape;
 
 struct PlayerInfo
@@ -29,7 +31,12 @@ public:
     void RemoveLine(int16_t);
     void MoveLine(int16_t);
     inline std::vector<PlayerInfo>& GetGrid() {return Grid;}
+    void ResetDraw();
 private:
     std::vector<PlayerInfo> Grid;
     size_t size;
+
+public:
+    std::vector<EForm> Draw;
+    std::vector<EForm> Queue;
 };

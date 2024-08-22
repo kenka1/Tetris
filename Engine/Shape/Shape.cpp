@@ -7,7 +7,7 @@
 Shape::Shape():
     scale(1.0f), rotation(0.0f), translate(0.0f), transform(1.0f)
 {
-    std::cout << "Constructor Shape" << std::endl;
+    // std::cout << "Constructor Shape" << std::endl;
     glCreateVertexArrays(1, &vao);
     glBindVertexArray(vao);
 

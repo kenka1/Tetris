@@ -39,7 +39,7 @@ Actor<Form>::Actor():
     actors(size)
 {
     ++ID;
-    std::cout << "Constructor Actor" << std::endl;
+    // std::cout << "Constructor Actor" << std::endl;
     for(size_t i = 0; i < size; ++i)
         actors[i] = InitializeDefaultActor();
     if(form == EForm::Square)

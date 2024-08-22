@@ -241,28 +241,91 @@ void GameMode::StopMove()
 
 void GameMode::CreateNewPlayer(BaseActor*& player)
 {
-    
+    std::vector<EForm>& DrawR = _GameState->Draw;
+    std::vector<EForm>& QueueR = _GameState->Queue;
+    if(DrawR.size() == 0)
+    {
+        _GameState->ResetDraw();
+    }
+
+    std::cout << "Draw size " << DrawR.size() << std::endl;
+    std::cout << "Queue size " << QueueR.size() << std::endl;
+
+
+
+    std::cout << "Draw buffer : ";
+    for(int i = 0; i < DrawR.size(); ++i)
+    {
+        if(DrawR[i] == EForm::Square)
+            std::cout << "EForm::Square" << '\t';
+        if(DrawR[i] == EForm::Straight)
+            std::cout << "EForm::Straight" << '\t';
+        if(DrawR[i] == EForm::T)
+           std::cout << "EForm::T" << '\t';
+        if(DrawR[i] == EForm::L)
+            std::cout << "EForm::L" << '\t';
+        if(DrawR[i] == EForm::Skew)
+            std::cout << "EForm::Skew" << '\t';
+    }
+    std::cout << '\n';
+
+
+    std::cout << "Queue buffer : ";
+    for(int i = 0; i < QueueR.size(); ++i)
+    {
+        if(QueueR[i] == EForm::Square)
+            std::cout << "EForm::Square" << '\t';
+        if(QueueR[i] == EForm::Straight)
+            std::cout << "EForm::Straight" << '\t';
+        if(QueueR[i] == EForm::T)
+           std::cout << "EForm::T" << '\t';
+        if(QueueR[i] == EForm::L)
+            std::cout << "EForm::L" << '\t';
+        if(QueueR[i] == EForm::Skew)
+            std::cout << "EForm::Skew" << '\t';
+    }
+    std::cout << '\n';
+
+    int max = static_cast<int>(DrawR.size()) - 1;
+    std::cout << "MAX : " << max << std::endl;
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution dis(0, 4);
-    int rand = dis(gen);
+    std::uniform_int_distribution dis(0, max);
+    int index = dis(gen);
+    std::cout << "INDEX : " << index << std::endl;
+    EForm rand = DrawR[index];
 
-    std::cout << "RAND : " << rand << std::endl;
+    DrawR.erase(DrawR.begin() + index);
+    QueueR.push_back(rand);
+
+    std::cout << "Draw : ";
+    if(rand == EForm::Square)
+        std::cout << "EForm::Square" << std::endl;
+    if(rand == EForm::Straight)
+        std::cout << "EForm::Straight" << std::endl;
+    if(rand == EForm::T)
+        std::cout << "EForm::T" << std::endl;
+    if(rand == EForm::L)
+        std::cout << "EForm::L" << std::endl;
+    if(rand == EForm::Skew)
+        std::cout << "EForm::Skew" << std::endl;
+
+
     switch(rand)
     {
-    case 0:
+    case EForm::Square:
        player = new Actor<EForm::Square>();
        break;
-    case 1:
+    case EForm::Straight:
         player = new Actor<EForm::Straight>();
         break;
-    case 2:
+    case EForm::T:
         player = new Actor<EForm::T>();
         break;
-    case 3:
+    case EForm::L:
         player = new Actor<EForm::L>();
         break;
-    case 4:
+    case EForm::Skew:
         player = new Actor<EForm::Skew>();
         break;
     }
