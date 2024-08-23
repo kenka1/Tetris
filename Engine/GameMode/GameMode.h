@@ -34,9 +34,10 @@ private:
     void MoveEvent();
     void StepEvent();
 
-    bool CanMove();
+    bool CanMove(const glm::vec3&);
     void Move(const glm::vec3&);
     void StopMove();
+    bool CheckSideBound(const glm::vec3&);
     void CalculateDeltaTime(); // refactoring::implement
 
     void CreateNewPlayer(BaseActor*&);

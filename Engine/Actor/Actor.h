@@ -18,9 +18,7 @@ public:
     Actor();
     virtual size_t GetSize() override;
     virtual Shape* operator[](size_t) override;
-    virtual int16_t GetID() const override;
 
-    static int16_t ID;
 private:
     size_t size = 4;
     std::vector<Shape*> actors;
@@ -38,29 +36,27 @@ template<EForm Form>
 Actor<Form>::Actor():
     actors(size)
 {
-    ++ID;
     // std::cout << "Constructor Actor" << std::endl;
     for(size_t i = 0; i < size; ++i)
         actors[i] = InitializeDefaultActor();
-    if(form == EForm::Square)
+        
+    switch (form)
     {
+    case EForm::Square:
         Square();
-    }
-    if(form == EForm::Straight)
-    {
+        break;
+    case EForm::Straight:
         Straight();
-    }
-    if(form == EForm::T)
-    {
+        break;
+    case EForm::T:
         T();
-    }
-    if(form == EForm::L)
-    {
+        break;
+    case EForm::L:
         L();
-    }
-    if(form == EForm::Skew)
-    {
+        break;
+    case EForm::Skew:
         Skew();
+        break;
     }
 
     for(size_t i = 0; i < size; ++i)
@@ -113,9 +109,6 @@ void Actor<Form>::Skew()
 }
 
 template<EForm Form>
-int16_t Actor<Form>::ID = -1;
-
-template<EForm Form>
 size_t Actor<Form>::GetSize()
 {
     return size;
@@ -125,12 +118,6 @@ template<EForm Form>
 Shape* Actor<Form>::operator[](size_t index)
 {
     return actors[index];
-}
-
-template<EForm Form>
-int16_t Actor<Form>::GetID() const
-{
-    return ID;
 }
 
 template<EForm Form>

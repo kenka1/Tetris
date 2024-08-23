@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 
 GameState::GameState():
-    Grid(210), size(0), Draw(5), Queue(0)
+    Grid(240), size(0), Draw(5), Queue(0)
 {
     std::cout << "Contructor GameState" << std::endl;
     Draw = {EForm::Square, EForm::Straight, EForm::T, EForm::L, EForm::Skew};
@@ -15,7 +15,7 @@ GameState::GameState():
 
 GameState::~GameState()
 {
-    for(int i = 0; i < 200; ++i)
+    for(int i = 0; i < 240; ++i)
     {
         if(Grid[i].Target != nullptr)
             delete Grid[i].Target;
@@ -28,11 +28,11 @@ void GameState::AddToGrid(Shape* target, int16_t index, int16_t ID)
     Grid[index].Player_ID = ID;
 }
 
-bool GameState::CheckCell(int16_t index, int16_t ID)
+bool GameState::CheckCell(int16_t index, int16_t id)
 {
     if(index < 0)
         return true;
-    if(Grid[index].Target != nullptr && Grid[index].Player_ID != ID)
+    if(Grid[index].Target != nullptr && Grid[index].Player_ID != id)
         return true;
     return false;
 }

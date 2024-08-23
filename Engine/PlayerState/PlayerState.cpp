@@ -5,6 +5,8 @@
 #include "GameState/GameState.h"
 #include "Actor/Actor.h"
 
+int16_t PlayerState::Player_ID = -1;
+
 PlayerState::PlayerState(GameMode* game):
     game(game), Grid_ID(4, -1), stop(false)
 {
