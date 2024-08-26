@@ -150,7 +150,9 @@ void GameMode::MoveEvent()
     if(call != -1)
     {
         glm::vec3 offset = _PlayerController->Move(call);
-        bool IsMoving = CanMove(offset);
+        bool IsMoving = true;
+        if(call == 2 || call == 4 || call == 5)
+            CanMove(offset);
 
         if(IsMoving)
         {
@@ -214,7 +216,7 @@ bool GameMode::CanMove(const glm::vec3& offset)
 
 void GameMode::Move(const glm::vec3& offset)
 {
-    if(CheckSideBound(offset))
+    if(CheckSideBound(offset) || !CanMove(offset))
         return;
 
     BaseActor* player = _PlayerController->GetPlayer();
