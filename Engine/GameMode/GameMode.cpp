@@ -73,6 +73,8 @@ void GameMode::GameLoop()
     // float FPS = 0.0;
     float time_step = 0.0;
     float time_move = 0.0;
+    float time_move_line = 0.0;
+    bool& delay = _GameState->GetDelay();
     // float temp_fps = 0.0;
     while(!glfwWindowShouldClose(window))
     {
@@ -80,9 +82,6 @@ void GameMode::GameLoop()
         CurrentFrame = glfwGetTime();
         DeltaTime = CurrentFrame - LastFrame;
         LastFrame = CurrentFrame;
-
-        if(player == nullptr)
-            std::cout << "PLAYER IS NULLPTR" << std::endl;
 
         // Game update
         if(player != nullptr && _PlayerState->GetStop() != true)
@@ -107,9 +106,24 @@ void GameMode::GameLoop()
                 time_step = 0.0f;
             }
         }
-        else
+        else if (delay != true)
         {
             CreateNewPlayer(player);
+        }
+
+
+        // Step after remove line
+        if(delay == true)
+        {
+            if(time_move_line <= 0.5f)
+            {
+                time_move_line += DeltaTime;
+            }
+            else
+            {
+                _GameState->MoveLine();
+                time_move_line = 0.0f;
+            }
         }
 
 

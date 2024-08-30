@@ -55,19 +55,33 @@ void GameState::RemoveLine(int16_t index)
                 delete Grid[i].Target;
             ClearGrid(i);
         }
+        ++remove_count;
+        delay = true;
+        if(_line_index == -1)
+            _line_index = line_index;
     }
 }
 
-void GameState::MoveLine(int16_t line_index)
+void GameState::MoveLine()
 {
-    for(int i = line_index * 10; i < 200 - 10; ++i)
+    std::cout << "MOVE LINE" << std::endl;
+    glm::vec3 offset(0.0f, -50.0f, 0.0f);
+    offset.y *= remove_count;
+    for(int i = _line_index * 10; i < 200 - 10 * remove_count; ++i)
     {
-        Shape* target = Grid[i + 10].Target;
+        Shape* target = Grid[i + 10 * remove_count].Target;
+        Grid[i].Target = target;
+        Grid[i].Player_ID = Grid[i + 10 * remove_count].Player_ID;
+        Grid[i].stop = true;
         if(target != nullptr)
         {
-            Grid[i] = Grid[i + 10];
+            target->Translate(target->GetTranslate() + offset);
+            target->UpdateTransform();
         }
     }
+    delay = false;
+    remove_count = 0;
+    _line_index = -1;
 }
 
 void GameState::ResetDraw()
