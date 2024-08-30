@@ -29,12 +29,17 @@ public:
     }
     bool CheckCell(int16_t, int16_t);
     void RemoveLine(int16_t);
-    void MoveLine(int16_t);
+    void MoveLine();
     inline std::vector<PlayerInfo>& GetGrid() {return Grid;}
+    inline bool& GetDelay() {return delay;}
+    inline int GetDelay() const {return remove_count;}
     void ResetDraw();
 private:
     std::vector<PlayerInfo> Grid;
     size_t size;
+    bool delay = false;
+    int remove_count = 0;
+    int16_t _line_index = -1;
 
 public:
     std::vector<EForm> Draw;
