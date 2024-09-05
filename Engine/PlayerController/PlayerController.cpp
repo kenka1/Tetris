@@ -25,7 +25,7 @@ glm::vec3 PlayerController::Move(int8_t call) const
         pos.y -= step;
         break;
     case 3:
-        pos.y += step;
+        // pos.y += step;
         break;
     case 4:
         pos.x += step;

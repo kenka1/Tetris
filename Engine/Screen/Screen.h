@@ -26,6 +26,8 @@ public:
     inline glm::mat4 GetProjection() const {return projection;}
 
     int8_t Move();
+    
+    bool CanRotate = true;
 private:
     int16_t width = ScreenCONST::WIDTH;
     int16_t height = ScreenCONST::HEIGHT;

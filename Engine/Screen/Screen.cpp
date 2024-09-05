@@ -67,32 +67,32 @@ void Screen::key_callback(GLFWwindow* window, int key, int scancode, int action,
 int8_t Screen::Move()
 {
     int8_t index = -1;
-    if(glfwGetKey(window, GLFW_KEY_D) == 1)
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         index = 0;
         // std::cout << "PRESSED D" << std::endl;
     }
-    if(glfwGetKey(window, GLFW_KEY_A) == 1)
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         index = 1;
         // std::cout << "PRESSED A" << std::endl;
     }
-    if(glfwGetKey(window, GLFW_KEY_S) == 1)
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         index = 2;
         // std::cout << "PRESSED S" << std::endl;
     }
-    if(glfwGetKey(window, GLFW_KEY_W) == 1)
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         index = 3;
         // std::cout << "PRESSED W" << std::endl;
     }
-    if(glfwGetKey(window, GLFW_KEY_S) == 1 && glfwGetKey(window, GLFW_KEY_D) == 1)
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         index = 4;
         // std::cout << "PRESSED S AND D" << std::endl;
     }
-    if(glfwGetKey(window, GLFW_KEY_S) == 1 && glfwGetKey(window, GLFW_KEY_A) == 1)
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         index = 5;
         // std::cout << "PRESSED S AND D" << std::endl;

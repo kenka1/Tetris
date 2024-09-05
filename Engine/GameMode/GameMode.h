@@ -36,8 +36,10 @@ private:
 
     bool CanMove(const glm::vec3&);
     void Move(const glm::vec3&);
+    void Rotate();
     void StopMove();
     bool CheckSideBound(const glm::vec3&);
+    bool CheckSideBound();
     void CalculateDeltaTime(); // refactoring::implement
 
     void CreateNewPlayer(BaseActor*&);

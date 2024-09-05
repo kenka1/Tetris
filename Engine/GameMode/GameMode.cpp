@@ -86,7 +86,6 @@ void GameMode::GameLoop()
         // Game update
         if(player != nullptr && _PlayerState->GetStop() != true)
         {
-
             if(time_move <= 0.1f)
             {
                 time_move += DeltaTime;
@@ -111,7 +110,6 @@ void GameMode::GameLoop()
             CreateNewPlayer(player);
         }
 
-
         // Step after remove line
         if(delay == true)
         {
@@ -125,7 +123,6 @@ void GameMode::GameLoop()
                 time_move_line = 0.0f;
             }
         }
-
 
         // RENDERING
         // std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
@@ -163,6 +160,15 @@ void GameMode::MoveEvent()
     int8_t call = _GameScreen->Move();
     if(call != -1)
     {
+        if(call == 3)
+        {
+            if(_GameScreen->CanRotate)
+            {
+                Rotate();
+                _GameScreen->CanRotate = false;
+            }
+            return; // can we press 2 buttons ???
+        }
         glm::vec3 offset = _PlayerController->Move(call);
         bool IsMoving = true;
         if(call == 2 || call == 4 || call == 5)
@@ -193,6 +199,7 @@ void GameMode::MoveEvent()
         std::cout << "---------------------------------------------------" << std::endl;
         //Debug
     }
+    _GameScreen->CanRotate = true;
 }
 
 void GameMode::StepEvent()
@@ -255,6 +262,72 @@ void GameMode::Move(const glm::vec3& offset)
     }
 }
 
+void GameMode::Rotate()
+{
+    std::cout << "Rotate event" << std::endl;
+    BaseActor* player = _PlayerController->GetPlayer();
+    if(dynamic_cast<Actor<EForm::Square>*>(player))
+    {
+        std::cout << "this is square, return" << std::endl;
+        return;
+    }
+    size_t N = player->GetSize();
+
+    // store prev data if we need to turn back
+    std::vector<std::pair<glm::vec3, int16_t>> prev_data(N);
+    for(size_t i = 0; i < N; ++i)
+    {
+        prev_data[i].first = (*player)[i]->GetTranslate();
+    }
+
+    player->Rotate();
+    bool CanRotate = true;
+
+    //debug
+    std::cout << "Current ID" << std::endl;
+    for(size_t i = 0; i < N; ++i)
+    {
+        std::cout << _PlayerState->GetID(i) << '\t';
+    }
+    std::cout << std::endl;
+    //debug
+
+    for(size_t i = 0; i < N; ++i)
+    {
+        Shape* target = (*player)[i];
+        int16_t Grid_ID = _PlayerState->CalculateID(target->GetTranslate());
+        std::cout << Grid_ID << '\t';
+        prev_data[i].second = Grid_ID;
+        if(_GameState->CheckCell(Grid_ID, _PlayerState->Player_ID) || CheckSideBound())
+            CanRotate = false;
+    }
+    std::cout << CanRotate << std::endl;
+    if(CanRotate)
+    {
+        player->ChangeCurrentState();
+        for(size_t i = 0; i < N; ++i)
+        {
+            _GameState->ClearGrid(_PlayerState->GetID(i));
+        }
+        std::cout << "set new" << std::endl;
+        for(size_t i = 0; i < N; ++i)
+        {
+            Shape* target = (*player)[i];
+            _PlayerState->SetID(i, prev_data[i].second);
+            _GameState->AddToGrid(target, prev_data[i].second, _PlayerState->Player_ID);
+            target->UpdateTransform();
+        }
+    }
+    else
+    {
+        for(size_t i = 0; i < N; ++i)
+        {
+            Shape* target = (*player)[i];
+            target->Translate(prev_data[i].first);
+        }
+    }
+}
+
 void GameMode::StopMove()
 {
     BaseActor* player = _PlayerController->GetPlayer();
@@ -281,7 +354,21 @@ bool GameMode::CheckSideBound(const glm::vec3& offset)
         if(pos.x < -250.0 || pos.x > 200)
             return true;
     }
+    return false;
+}
 
+bool GameMode::CheckSideBound()
+{
+    BaseActor* player = _PlayerController->GetPlayer();
+    size_t N = player->GetSize();
+
+    for(size_t i = 0; i < N; ++i)
+    {
+        Shape* target = (*player)[i];
+        glm::vec3 pos = target->GetTranslate();
+        if(pos.x < -250.0 || pos.x > 200)
+            return true;
+    }
     return false;
 }
 
