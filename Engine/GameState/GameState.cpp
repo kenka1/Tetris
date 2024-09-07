@@ -47,7 +47,8 @@ void GameState::RemoveLine(int16_t index)
     // std::cout << "LINE INDEX : " << line_index << std::endl;
     if(remove)
     {
-        // std::cout << "REMOVE LINE" << std::endl;
+        std::cout << "REMOVE LINE" << std::endl;
+        std::cout << "line index : " << line_index << std::endl;
         for(int i = line_index * 10; i < line_index * 10 + 10; ++i)
         {
             // std::cout << "Remove Index : " << i << std::endl;
@@ -59,6 +60,8 @@ void GameState::RemoveLine(int16_t index)
         delay = true;
         if(_line_index == -1)
             _line_index = line_index;
+        else
+            _line_index = std::min(_line_index, line_index);
     }
 }
 
@@ -67,6 +70,8 @@ void GameState::MoveLine()
     std::cout << "MOVE LINE" << std::endl;
     glm::vec3 offset(0.0f, -50.0f, 0.0f);
     offset.y *= remove_count;
+    std::cout << "line index : " << _line_index << std::endl;
+    std::cout << "offset : " << offset.y << std::endl;
     for(int i = _line_index * 10; i < 200 - 10 * remove_count; ++i)
     {
         Shape* target = Grid[i + 10 * remove_count].Target;

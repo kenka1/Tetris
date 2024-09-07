@@ -95,7 +95,7 @@ void GameMode::GameLoop()
                 MoveEvent();
                 time_move = 0.0f;
             }
-            if(time_step <= 0.5f)
+            if(time_step <= 0.2f)
             {
                 time_step += DeltaTime;
             }
