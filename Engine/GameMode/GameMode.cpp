@@ -78,52 +78,6 @@ void GameMode::GameLoop()
     // float temp_fps = 0.0;
     while(!glfwWindowShouldClose(window))
     {
-        // Calculate DeltaTime
-        CurrentFrame = glfwGetTime();
-        DeltaTime = CurrentFrame - LastFrame;
-        LastFrame = CurrentFrame;
-
-        // Game update
-        if(player != nullptr && _PlayerState->GetStop() != true)
-        {
-            if(time_move <= 0.1f)
-            {
-                time_move += DeltaTime;
-            }
-            else
-            {                
-                MoveEvent();
-                time_move = 0.0f;
-            }
-            if(time_step <= 0.2f)
-            {
-                time_step += DeltaTime;
-            }
-            else
-            {
-                StepEvent();
-                time_step = 0.0f;
-            }
-        }
-        else if (delay != true)
-        {
-            CreateNewPlayer(player);
-        }
-
-        // Step after remove line
-        if(delay == true)
-        {
-            if(time_move_line <= 0.5f)
-            {
-                time_move_line += DeltaTime;
-            }
-            else
-            {
-                _GameState->MoveLine();
-                time_move_line = 0.0f;
-            }
-        }
-
         // RENDERING
         // std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
         glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
@@ -153,6 +107,55 @@ void GameMode::GameLoop()
 
     delete Grid2;
     delete Grid;
+}
+
+void GameMode::UpdateGame()
+{
+    // Calculate DeltaTime
+    CurrentFrame = glfwGetTime();
+    DeltaTime = CurrentFrame - LastFrame;
+    LastFrame = CurrentFrame;
+
+    // Game update
+    if(player != nullptr && _PlayerState->GetStop() != true)
+    {
+        if(time_move <= 0.1f)
+        {
+            time_move += DeltaTime;
+        }
+        else
+        {                
+            MoveEvent();
+            time_move = 0.0f;
+        }
+        if(time_step <= 0.2f)
+        {
+            time_step += DeltaTime;
+        }
+        else
+        {
+            StepEvent();
+            time_step = 0.0f;
+        }
+    }
+    else if (delay != true)
+    {
+        CreateNewPlayer(player);
+    }
+
+    // Step after remove line
+    if(delay == true)
+    {
+        if(time_move_line <= 0.5f)
+        {
+            time_move_line += DeltaTime;
+        }
+        else
+        {
+            _GameState->MoveLine();
+            time_move_line = 0.0f;
+        }
+    }
 }
 
 void GameMode::MoveEvent()

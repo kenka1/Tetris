@@ -34,6 +34,7 @@ private:
     void MoveEvent();
     void StepEvent();
 
+    void ProcessInputs();
     void UpdateGame(); // refactoring::implement
     bool CanMove(const glm::vec3&);
     void Move(const glm::vec3&);

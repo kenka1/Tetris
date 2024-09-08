@@ -56,6 +56,8 @@ void GameState::RemoveLine(int16_t index)
                 delete Grid[i].Target;
             ClearGrid(i);
         }
+        score += 10;
+        std::cout << "current scor : " << score << std::endl;
         ++remove_count;
         delay = true;
         if(_line_index == -1)

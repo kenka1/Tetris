@@ -37,6 +37,7 @@ public:
 private:
     std::vector<PlayerInfo> Grid;
     size_t size;
+    uint16_t score = 0;
     bool delay = false;
     int remove_count = 0;
     int16_t _line_index = -1;
