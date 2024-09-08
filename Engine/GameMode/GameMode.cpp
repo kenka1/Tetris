@@ -65,10 +65,7 @@ void GameMode::GameLoop()
     Grid2->StoreIndices(sizeof(grid::indices), grid::indices);
 
     GLFWwindow* window = _GameScreen->GetWindow();
-    BaseActor* player = _PlayerController->GetPlayer();
-
-    bool& delay = _GameState->GetDelay();
-    // float temp_fps = 0.0;
+    
     while(!glfwWindowShouldClose(window))
     {
         ProcessInputs();
@@ -76,7 +73,6 @@ void GameMode::GameLoop()
         UpdateGame();
 
         // RENDERING
-        // std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
         glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(_Program->GetProgram());
@@ -108,7 +104,7 @@ void GameMode::GameLoop()
 
 void GameMode::ProcessInputs()
 {
-    
+
 }
 
 void GameMode::UpdateGame()
