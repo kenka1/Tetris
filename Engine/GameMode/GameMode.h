@@ -41,6 +41,7 @@ private:
     void Move(const glm::vec3&);
     void Rotate(); // refactoring too much code ??
     void StopMove();
+    void EndGame(int16_t);
     bool CheckSideBound(const glm::vec3&);
     bool CheckSideBound();
     void CalculateDeltaTime(); // refactoring::implement ??

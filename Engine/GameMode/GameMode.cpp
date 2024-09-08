@@ -339,8 +339,15 @@ void GameMode::StopMove()
 
         _PlayerState->SetStop(true);
         _GameState->GetGrid()[Grid_ID].stop = true;
+        EndGame(Grid_ID);
         _GameState->RemoveLine(Grid_ID);
     }
+}
+
+void GameMode::EndGame(int16_t Grid_ID)
+{
+    if(_PlayerState->GetStop() == true && Grid_ID >= 200)
+        glfwSetWindowShouldClose(_GameScreen->GetWindow(), 1);
 }
 
 bool GameMode::CheckSideBound(const glm::vec3& offset)
