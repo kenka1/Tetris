@@ -15,6 +15,7 @@
 #include "Program/Program.h"
 
 #include "ObjectsData/GridData.h"
+#include "GameStatics/GameStatics.h"
 
 GameMode::GameMode():
     _GameScreen(new Screen), _PlayerController(new PlayerController(this)), 
@@ -66,18 +67,14 @@ void GameMode::GameLoop()
     GLFWwindow* window = _GameScreen->GetWindow();
     BaseActor* player = _PlayerController->GetPlayer();
 
-    glm::mat4 Proj = _GameScreen->GetProjection();
-
-    double LastFrame = 0.0;
-    double CurrentFrame = 0.0;
-    // float FPS = 0.0;
-    float time_step = 0.0;
-    float time_move = 0.0;
-    float time_move_line = 0.0;
     bool& delay = _GameState->GetDelay();
     // float temp_fps = 0.0;
     while(!glfwWindowShouldClose(window))
     {
+        ProcessInputs();
+
+        UpdateGame();
+
         // RENDERING
         // std::cout << "DeltaTime :" << DeltaTime << " " << "FPS :" << FPS << std::endl;
         glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
@@ -89,7 +86,7 @@ void GameMode::GameLoop()
         // Grid Render Start
         glBindVertexArray(Grid->GetVao());
         glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
-                                                    1, GL_FALSE, &Proj[0][0]);
+                                                    1, GL_FALSE, &_GameScreen->GetProjection()[0][0]);
         glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.65f, 0.65f, 0.65f);
         glLineWidth(3.0f);
         glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 0);
@@ -109,42 +106,47 @@ void GameMode::GameLoop()
     delete Grid;
 }
 
+void GameMode::ProcessInputs()
+{
+    
+}
+
 void GameMode::UpdateGame()
 {
     // Calculate DeltaTime
-    CurrentFrame = glfwGetTime();
-    DeltaTime = CurrentFrame - LastFrame;
-    LastFrame = CurrentFrame;
+    TimeData::CurrentFrame = glfwGetTime();
+    DeltaTime = TimeData::CurrentFrame - TimeData::LastFrame;
+    TimeData::LastFrame = TimeData::CurrentFrame;
 
     // Game update
-    if(player != nullptr && _PlayerState->GetStop() != true)
+    if(_PlayerController->GetPlayer() != nullptr && _PlayerState->GetStop() != true)
     {
-        if(time_move <= 0.1f)
+        if(TimeData::time_move <= 0.1f)
         {
-            time_move += DeltaTime;
+            TimeData::time_move += DeltaTime;
         }
         else
         {                
             MoveEvent();
-            time_move = 0.0f;
+            TimeData::time_move = 0.0f;
         }
-        if(time_step <= 0.2f)
+        if(TimeData::time_step <= 0.2f)
         {
-            time_step += DeltaTime;
+            TimeData::time_step += DeltaTime;
         }
         else
         {
             StepEvent();
-            time_step = 0.0f;
+            TimeData::time_step = 0.0f;
         }
     }
-    else if (delay != true)
+    else if (_GameState->GetDelay() != true)
     {
-        CreateNewPlayer(player);
+        CreateNewPlayer();
     }
 
     // Step after remove line
-    if(delay == true)
+    if(_GameState->GetDelay() == true)
     {
         if(time_move_line <= 0.5f)
         {
@@ -375,7 +377,7 @@ bool GameMode::CheckSideBound()
     return false;
 }
 
-void GameMode::CreateNewPlayer(BaseActor*& player)
+void GameMode::CreateNewPlayer()
 {
     std::vector<EForm>& DrawR = _GameState->Draw;
     std::vector<EForm>& QueueR = _GameState->Queue;
@@ -394,6 +396,7 @@ void GameMode::CreateNewPlayer(BaseActor*& player)
     DrawR.erase(DrawR.begin() + index);
     QueueR.push_back(rand);
 
+    BaseActor* player = nullptr;
     switch(rand)
     {
     case EForm::Square:

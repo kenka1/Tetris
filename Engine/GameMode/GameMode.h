@@ -29,20 +29,21 @@ private:
 
     void Initialization();
     void GameLoop();
+
+    void ProcessInputs(); // implement ??
+    void UpdateGame();
     void Render();
 
     void MoveEvent();
     void StepEvent();
 
-    void ProcessInputs();
-    void UpdateGame(); // refactoring::implement
     bool CanMove(const glm::vec3&);
     void Move(const glm::vec3&);
-    void Rotate();
+    void Rotate(); // refactoring too much code ??
     void StopMove();
     bool CheckSideBound(const glm::vec3&);
     bool CheckSideBound();
-    void CalculateDeltaTime(); // refactoring::implement
+    void CalculateDeltaTime(); // refactoring::implement ??
 
-    void CreateNewPlayer(BaseActor*&);
+    void CreateNewPlayer();
 };
