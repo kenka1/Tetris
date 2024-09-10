@@ -11,8 +11,7 @@ add_library(Engine
     ${CMAKE_CURRENT_SOURCE_DIR}/GameState/GameState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PlayerState/PlayerState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PlayerController/PlayerController.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/BaseActor/BaseActor.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/GameStatics/GameStatics.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/BaseActor/BaseActor.cpp)
 
 target_include_directories(Engine
     PUBLIC
