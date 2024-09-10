@@ -22,10 +22,11 @@ GameState::~GameState()
     }
 }
 
-void GameState::AddToGrid(Shape* target, int16_t index, int16_t ID)
+void GameState::AddToGrid(Shape* target, int16_t index, int16_t ID, EForm type_)
 {
     Grid[index].Target = target;
     Grid[index].Player_ID = ID;
+    Grid[index].type = type_;
 }
 
 bool GameState::CheckCell(int16_t index, int16_t id)

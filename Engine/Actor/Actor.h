@@ -23,7 +23,7 @@ public:
         for(std::size_t i = 0; i < size; ++i)
             actors[i] = InitializeDefaultActor();
             
-        switch (form)
+        switch (value_type)
         {
         case EForm::Square:
             Square();
@@ -62,7 +62,7 @@ public:
 
     virtual void Rotate() override
     {
-        switch(form)
+        switch(value_type)
         {
         case EForm::Straight:
             std::cout << "Rotate Straight" << std::endl;
@@ -89,12 +89,16 @@ public:
     {
         current_state = (current_state + 1) % states;
     }
+
+    virtual EForm GetType() override {return Form;}
+
 private:
     std::size_t size = 4;
     int8_t states = 0;
     int8_t current_state = 0;
     std::vector<Shape*> actors;
-    EForm form = Form;
+    EForm value_type = Form;
+    
 
     Shape* InitializeDefaultActor()
     {

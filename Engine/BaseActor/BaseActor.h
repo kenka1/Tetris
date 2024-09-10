@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Type/Types.h"
+
 #include <cstddef>
 #include <cstdint>
 
@@ -13,4 +15,5 @@ public:
     virtual Shape* operator[](size_t) = 0;
     virtual void Rotate() = 0;
     virtual void ChangeCurrentState() = 0;
+    virtual EForm GetType() = 0;
 };

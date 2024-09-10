@@ -1,3 +1,5 @@
+#include <cstddef>
+
 namespace obj
 {
     const float data[] = 

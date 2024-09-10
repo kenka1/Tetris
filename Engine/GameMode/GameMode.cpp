@@ -73,7 +73,7 @@ void GameMode::GameLoop()
         UpdateGame();
 
         // RENDERING
-        glClearColor(0.3f, 0.5f, 0.6f, 1.0f);
+        glClearColor(0.15f, 0.15f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(_Program->GetProgram());
 
@@ -83,7 +83,7 @@ void GameMode::GameLoop()
         glBindVertexArray(Grid->GetVao());
         glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
                                                     1, GL_FALSE, &_GameScreen->GetProjection()[0][0]);
-        glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.65f, 0.65f, 0.65f);
+        glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.55f, 0.66f, 0.7f);
         glLineWidth(3.0f);
         glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 0);
         glDrawElementsInstanced(GL_LINES, 2, GL_UNSIGNED_INT, nullptr, 9);
@@ -259,7 +259,7 @@ void GameMode::Move(const glm::vec3& offset)
         target->Translate(pos);
         target->UpdateTransform();
         _PlayerState->SetID(i, Grid_ID);
-        _GameState->AddToGrid(target, Grid_ID, _PlayerState->Player_ID);
+        _GameState->AddToGrid(target, Grid_ID, _PlayerState->Player_ID, player->GetType());
     }
 }
 
@@ -315,7 +315,7 @@ void GameMode::Rotate()
         {
             Shape* target = (*player)[i];
             _PlayerState->SetID(i, prev_data[i].second);
-            _GameState->AddToGrid(target, prev_data[i].second, _PlayerState->Player_ID);
+            _GameState->AddToGrid(target, prev_data[i].second, _PlayerState->Player_ID, player->GetType());
             target->UpdateTransform();
         }
     }
@@ -427,22 +427,43 @@ void GameMode::CreateNewPlayer()
     {
         int16_t Grid_ID = _PlayerState->CalculateID((*player)[i]->GetTranslate());
         _PlayerState->SetID(i, Grid_ID);
-        _GameState->AddToGrid((*player)[i], Grid_ID, _PlayerState->Player_ID);
+        _GameState->AddToGrid((*player)[i], Grid_ID, _PlayerState->Player_ID, rand);
     }
 }
+
 void GameMode::Render()
 {
     std::vector<PlayerInfo>& Grid = _GameState->GetGrid();
+
     for(size_t i = 0; i < Grid.size(); ++i)
     {
         if(Grid[i].Target != nullptr)
         {
             Shape* player = Grid[i].Target;
+            float color[3];
+            switch (Grid[i].type)
+            {
+            case EForm::Square:
+                color[0] = 0.4f; color[1] = 0.8f;; color[2] = 0.8f;
+                break;
+            case EForm::Straight:
+                color[0] = 0.9f; color[1] = 0.9f; color[2] = 0.4f;
+                break;
+            case EForm::T:
+                color[0] = 0.6f; color[1] = 0.4f; color[2] = 0.6f;
+                break;
+            case EForm::L:
+                color[0] = 0.4f; color[1] = 0.8f; color[2] = 0.4f;
+                break;
+            case EForm::Skew:
+                color[0] = 0.8f; color[1] = 0.4f; color[2] = 0.4f;
+                break;
+            }
             glm::mat4 Transform = _GameScreen->GetProjection() * player->GetTransform();
             glBindVertexArray(player->GetVao());
             glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
                                                         1, GL_FALSE, &Transform[0][0]);
-            glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.7f, 0.3f, 0.2f);
+            glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), color[0], color[1], color[2]);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         }
     }
