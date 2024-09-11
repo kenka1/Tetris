@@ -3,23 +3,36 @@
 
 #include "GameState/GameState.h"
 #include "Shape/Shape.h"
+#include "ObjectsData/BlockData.h"
 
 #include <glm/glm.hpp>
 
 GameState::GameState():
-    Grid(240), size(0), Draw(5), Queue(0)
+    Grid(240), PredictGrid(4), size(0), Draw(5), Queue(0)
 {
     std::cout << "Contructor GameState" << std::endl;
     Draw = {EForm::Square, EForm::Straight, EForm::T, EForm::L, EForm::Skew};
+    for(size_t i = 0; i < 4; ++i)
+    {
+        Shape* target = new Shape();
+        target->StoreData(sizeof(obj::data), obj::data);
+        target->StoreIndices(sizeof(obj::indices), obj::indices);
+        target->Scale(50.0f);
+        target->UpdateTransform();
+        PredictGrid[i] = target;
+    }
 }
 
 GameState::~GameState()
 {
-    for(int i = 0; i < 240; ++i)
+    for(size_t i = 0; i < 240; ++i)
     {
         if(Grid[i].Target != nullptr)
             delete Grid[i].Target;
     }
+
+    for(size_t i = 0; i < 4; ++i)
+        delete PredictGrid[i];
 }
 
 void GameState::AddToGrid(Shape* target, int16_t index, int16_t ID, EForm type_)
@@ -27,6 +40,16 @@ void GameState::AddToGrid(Shape* target, int16_t index, int16_t ID, EForm type_)
     Grid[index].Target = target;
     Grid[index].Player_ID = ID;
     Grid[index].type = type_;
+}
+
+void GameState::UpdatePredictGrid(const std::vector<glm::vec3>& offset)
+{
+    for(size_t i = 0; i < 4; ++i)
+    {
+        PredictGrid[i]->Translate(offset[i]);
+        std::cout << "Offset : " << i << " " << "x : " << offset[i].x << " " << "y : " << offset[i].y << std::endl;
+        PredictGrid[i]->UpdateTransform();
+    }
 }
 
 bool GameState::CheckCell(int16_t index, int16_t id)

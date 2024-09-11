@@ -39,6 +39,7 @@ private:
     bool CanMove(const glm::vec3&);
     void Move(const glm::vec3&);
     void MoveToStop();
+    void CalculatePredict();
     void Rotate(); // refactoring, too much code ??
     void StopMove();
     void EndGame(int16_t);
