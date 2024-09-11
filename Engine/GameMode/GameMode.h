@@ -25,7 +25,6 @@ private:
     PlayerState* _PlayerState;
     GameState* _GameState;
     Program* _Program;
-    double DeltaTime;
 
     void Initialization();
     void GameLoop();
@@ -39,7 +38,8 @@ private:
 
     bool CanMove(const glm::vec3&);
     void Move(const glm::vec3&);
-    void Rotate(); // refactoring too much code ??
+    void MoveToStop();
+    void Rotate(); // refactoring, too much code ??
     void StopMove();
     void EndGame(int16_t);
     bool CheckSideBound(const glm::vec3&);

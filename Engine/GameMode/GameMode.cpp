@@ -20,7 +20,7 @@
 GameMode::GameMode():
     _GameScreen(new Screen), _PlayerController(new PlayerController(this)), 
     _PlayerState(new PlayerState(this)),
-    _GameState(new GameState),_Program(nullptr), DeltaTime(0.0)
+    _GameState(new GameState),_Program(nullptr)
 {
     std::cout << "Contructor GameMode" << std::endl;
 }
@@ -104,22 +104,29 @@ void GameMode::GameLoop()
 
 void GameMode::ProcessInputs()
 {
+    if(_GameScreen->CanSpace == false)
+    {
+        TimeData::time_space += TimeData::DeltaTime;
+
+        if(TimeData::time_space >= 0.35f)
+        {
+            _GameScreen->CanSpace = true;
+            TimeData::time_space = 0.0f;
+        }
+    }
 
 }
 
 void GameMode::UpdateGame()
 {
-    // Calculate DeltaTime
-    TimeData::CurrentFrame = glfwGetTime();
-    DeltaTime = TimeData::CurrentFrame - TimeData::LastFrame;
-    TimeData::LastFrame = TimeData::CurrentFrame;
+    CalculateDeltaTime();
 
-    // Game update
+    // Move
     if(_PlayerController->GetPlayer() != nullptr && _PlayerState->GetStop() != true)
     {
         if(TimeData::time_move <= 0.1f)
         {
-            TimeData::time_move += DeltaTime;
+            TimeData::time_move += TimeData::DeltaTime;
         }
         else
         {                
@@ -128,7 +135,7 @@ void GameMode::UpdateGame()
         }
         if(TimeData::time_step <= 0.2f)
         {
-            TimeData::time_step += DeltaTime;
+            TimeData::time_step += TimeData::DeltaTime;
         }
         else
         {
@@ -144,16 +151,23 @@ void GameMode::UpdateGame()
     // Step after remove line
     if(_GameState->GetDelay() == true)
     {
-        if(time_move_line <= 0.5f)
+        if(TimeData::time_move_line <= 0.5f)
         {
-            time_move_line += DeltaTime;
+            TimeData::time_move_line += TimeData::DeltaTime;
         }
         else
         {
             _GameState->MoveLine();
-            time_move_line = 0.0f;
+            TimeData::time_move_line = 0.0f;
         }
     }
+}
+
+void GameMode::CalculateDeltaTime()
+{
+    TimeData::CurrentFrame = glfwGetTime();
+    TimeData::DeltaTime = TimeData::CurrentFrame - TimeData::LastFrame;
+    TimeData::LastFrame = TimeData::CurrentFrame;
 }
 
 void GameMode::MoveEvent()
@@ -169,6 +183,11 @@ void GameMode::MoveEvent()
                 _GameScreen->CanRotate = false;
             }
             return; // can we press 2 buttons ???
+        }
+        if(call == 6)
+        {
+            MoveToStop();
+            return;
         }
         glm::vec3 offset = _PlayerController->Move(call);
         bool IsMoving = true;
@@ -261,6 +280,21 @@ void GameMode::Move(const glm::vec3& offset)
         _PlayerState->SetID(i, Grid_ID);
         _GameState->AddToGrid(target, Grid_ID, _PlayerState->Player_ID, player->GetType());
     }
+}
+
+void GameMode::MoveToStop()
+{
+    glm::vec3 offset(0.0f, -50.0f, 0.0f);
+    while(CanMove(offset))
+    {
+        offset.y -= 50.0f;
+    }
+    offset.y += 50.0f;
+    std::cout << "offset : " << offset.y << std::endl;
+
+    Move(offset);
+    StopMove();
+    _GameScreen->CanSpace = false;
 }
 
 void GameMode::Rotate()

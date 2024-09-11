@@ -97,5 +97,10 @@ int8_t Screen::Move()
         index = 5;
         // std::cout << "PRESSED S AND D" << std::endl;
     }
+    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && CanSpace)
+    {
+        index = 6;
+        std::cout << "PRESSED SPACE" << std::endl;
+    }
     return index;
 }
