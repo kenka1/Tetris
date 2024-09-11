@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include <cstddef>
-
+#include "glm/glm.hpp"
 #include "Type/Types.h"
 
 class Shape;
@@ -23,6 +23,7 @@ public:
     ~GameState();
 
     void AddToGrid(Shape*, int16_t, int16_t, EForm);
+    void UpdatePredictGrid(const std::vector<glm::vec3>&);
     inline void ClearGrid(int16_t index) {
         Grid[index].Target = nullptr;
         Grid[index].Player_ID = -1;
@@ -32,11 +33,13 @@ public:
     void RemoveLine(int16_t);
     void MoveLine();
     inline std::vector<PlayerInfo>& GetGrid() {return Grid;}
+    inline std::vector<Shape*>& GetPredictGrid() {return PredictGrid;}
     inline bool& GetDelay() {return delay;}
     inline int GetDelay() const {return remove_count;}
     void ResetDraw();
 private:
     std::vector<PlayerInfo> Grid;
+    std::vector<Shape*> PredictGrid;
     size_t size;
     uint16_t score = 0;
     bool delay = false;

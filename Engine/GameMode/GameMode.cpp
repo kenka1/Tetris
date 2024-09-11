@@ -219,6 +219,8 @@ void GameMode::MoveEvent()
         std::cout << "---------------------------------------------------" << std::endl;
         //Debug
     }
+    CalculatePredict();
+
     _GameScreen->CanRotate = true;
 }
 
@@ -280,6 +282,28 @@ void GameMode::Move(const glm::vec3& offset)
         _PlayerState->SetID(i, Grid_ID);
         _GameState->AddToGrid(target, Grid_ID, _PlayerState->Player_ID, player->GetType());
     }
+}
+
+void GameMode::CalculatePredict()
+{
+    glm::vec3 offset(0.0f, -50.0f, 0.0f);
+    while(CanMove(offset))
+    {
+        offset.y -= 50.0f;
+    }
+    offset.y += 50.0f;
+    std::cout << "Offset : " << offset.y << std::endl;
+    BaseActor* player = _PlayerController->GetPlayer();
+    std::vector<glm::vec3> offsets(4);
+    for(size_t i = 0; i < 4; ++i)
+    {
+        Shape* target = (*player)[i];
+        glm::vec3 pos = target->GetTranslate();
+        std::cout << "Player pos : " << pos.y << std::endl;
+        offsets[i] = pos + offset;
+    }
+
+    _GameState->UpdatePredictGrid(offsets);
 }
 
 void GameMode::MoveToStop()
@@ -463,6 +487,7 @@ void GameMode::CreateNewPlayer()
         _PlayerState->SetID(i, Grid_ID);
         _GameState->AddToGrid((*player)[i], Grid_ID, _PlayerState->Player_ID, rand);
     }
+    CalculatePredict();
 }
 
 void GameMode::Render()
@@ -500,5 +525,17 @@ void GameMode::Render()
             glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), color[0], color[1], color[2]);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         }
+    }
+
+    std::vector<Shape*> PredictGrid = _GameState->GetPredictGrid();
+    for(size_t i = 0; i < 4; ++i)
+    {
+        Shape* target = PredictGrid[i];
+        glm::mat4 Transform = _GameScreen->GetProjection() * target->GetTransform();
+        glBindVertexArray(target->GetVao());
+        glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
+                                                    1, GL_FALSE, &Transform[0][0]);
+        glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 1.0f, 0.0f, 0.0f);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 }
