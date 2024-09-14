@@ -107,6 +107,7 @@ private:
         cube->StoreIndices(sizeof(obj::indices), obj::indices);
         cube->Scale(50.0f);
         cube->UpdateTransform();
+        // cube->LoadTexture("Textures/123(2).png");
         return cube;
     }
 

@@ -19,6 +19,7 @@ GameState::GameState():
         target->StoreIndices(sizeof(obj::indices), obj::indices);
         target->Scale(50.0f);
         target->UpdateTransform();
+        target->LoadTexture("Textures/456.jpg");
         PredictGrid[i] = target;
     }
 }

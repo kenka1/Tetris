@@ -81,14 +81,17 @@ void GameMode::GameLoop()
 
         // Grid Render Start
         glBindVertexArray(Grid->GetVao());
+        glUniform1i(glGetUniformLocation(_Program->GetProgram(), "isTexture"), 0);
         glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
                                                     1, GL_FALSE, &_GameScreen->GetProjection()[0][0]);
-        glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.55f, 0.66f, 0.7f);
+        glUniform4f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.55f, 0.66f, 0.7f, 1.0f);
         glLineWidth(3.0f);
         glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 0);
         glDrawElementsInstanced(GL_LINES, 2, GL_UNSIGNED_INT, nullptr, 9);
 
         glBindVertexArray(Grid2->GetVao());
+
+        glUniform1i(glGetUniformLocation(_Program->GetProgram(), "isTexture"), 0);
         glLineWidth(3.0f);
         glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 1);
         glDrawElementsInstanced(GL_LINES, 2, GL_UNSIGNED_INT, nullptr, 19);
@@ -376,6 +379,7 @@ void GameMode::Rotate()
             _GameState->AddToGrid(target, prev_data[i].second, _PlayerState->Player_ID, player->GetType());
             target->UpdateTransform();
         }
+        CalculatePredict();
     }
     else
     {
@@ -493,7 +497,6 @@ void GameMode::CreateNewPlayer()
 void GameMode::Render()
 {
     std::vector<PlayerInfo>& Grid = _GameState->GetGrid();
-
     for(size_t i = 0; i < Grid.size(); ++i)
     {
         if(Grid[i].Target != nullptr)
@@ -520,9 +523,17 @@ void GameMode::Render()
             }
             glm::mat4 Transform = _GameScreen->GetProjection() * player->GetTransform();
             glBindVertexArray(player->GetVao());
+            int isTexture = 0;
+            if(player->GetTexture() != 111)
+            {
+                isTexture = 1;
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, player->GetTexture());
+            }
+            glUniform1i(glGetUniformLocation(_Program->GetProgram(), "isTexture"), isTexture);
             glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
                                                         1, GL_FALSE, &Transform[0][0]);
-            glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), color[0], color[1], color[2]);
+            glUniform4f(glGetUniformLocation(_Program->GetProgram(), "uColor"), color[0], color[1], color[2], 1.0f);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         }
     }
@@ -530,12 +541,20 @@ void GameMode::Render()
     std::vector<Shape*> PredictGrid = _GameState->GetPredictGrid();
     for(size_t i = 0; i < 4; ++i)
     {
-        Shape* target = PredictGrid[i];
-        glm::mat4 Transform = _GameScreen->GetProjection() * target->GetTransform();
-        glBindVertexArray(target->GetVao());
+        Shape* player = PredictGrid[i];
+        glm::mat4 Transform = _GameScreen->GetProjection() * player->GetTransform();
+        glBindVertexArray(player->GetVao());
+        int isTexture = 0;
+        if(player->GetTexture() != 111)
+        {
+            isTexture = 1;
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, player->GetTexture());
+        }
+        glUniform1i(glGetUniformLocation(_Program->GetProgram(), "isTexture"), isTexture);
         glUniformMatrix4fv(glGetUniformLocation(_Program->GetProgram(), "uTransform"), 
                                                     1, GL_FALSE, &Transform[0][0]);
-        glUniform3f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 1.0f, 0.0f, 0.0f);
+        glUniform4f(glGetUniformLocation(_Program->GetProgram(), "uColor"), 0.96f, 0.54f, 0.3f, 1.0f);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 }
