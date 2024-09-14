@@ -117,7 +117,6 @@ void GameMode::ProcessInputs()
             TimeData::time_space = 0.0f;
         }
     }
-
 }
 
 void GameMode::UpdateGame()
@@ -136,7 +135,7 @@ void GameMode::UpdateGame()
             MoveEvent();
             TimeData::time_move = 0.0f;
         }
-        if(TimeData::time_step <= 0.2f)
+        if(TimeData::time_step <= TimeData::MaxTime_step)
         {
             TimeData::time_step += TimeData::DeltaTime;
         }
@@ -145,6 +144,7 @@ void GameMode::UpdateGame()
             StepEvent();
             TimeData::time_step = 0.0f;
         }
+        TimeData::MaxTime_step -= 0.000001f;
     }
     else if (_GameState->GetDelay() != true)
     {

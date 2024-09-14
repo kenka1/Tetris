@@ -15,7 +15,7 @@ void main()
         fColor = texture(uTexture, TexCoord);
         if(fColor.x > 0.8 && fColor.y > 0.8 && fColor.z > 0.8)
             discard;
-        fColor = uColor;
+        fColor = mix(fColor, uColor, 0.8);
     }
     else
         fColor = uColor;

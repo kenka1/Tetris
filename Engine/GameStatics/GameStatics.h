@@ -10,6 +10,8 @@ struct TimeData
     static float time_move;
     static float time_move_line;
     static float time_space;
+
+    static float MaxTime_step;
 };
 
 double TimeData::LastFrame = 0.0;
@@ -19,3 +21,5 @@ float TimeData::time_step = 0.0f;
 float TimeData::time_move = 0.0f;
 float TimeData::time_move_line = 0.0f;
 float TimeData::time_space = 0.0f;
+
+float TimeData::MaxTime_step = 0.2f;
