@@ -77,8 +77,6 @@ void GameMode::GameLoop()
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(_Program->GetProgram());
 
-        Render();
-
         // Grid Render Start
         glBindVertexArray(Grid->GetVao());
         glUniform1i(glGetUniformLocation(_Program->GetProgram(), "isTexture"), 0);
@@ -96,6 +94,8 @@ void GameMode::GameLoop()
         glUniform1i(glGetUniformLocation(_Program->GetProgram(), "uGrid_ID"), 1);
         glDrawElementsInstanced(GL_LINES, 2, GL_UNSIGNED_INT, nullptr, 19);
         // Grid Render end
+
+        Render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -144,7 +144,8 @@ void GameMode::UpdateGame()
             StepEvent();
             TimeData::time_step = 0.0f;
         }
-        TimeData::MaxTime_step -= 0.000001f;
+        TimeData::MaxTime_step -= TimeData::MaxTime_step_delta;
+        TimeData::MaxTime_step = std::max(TimeData::MaxTime_step, TimeData::MaxTime_step);
     }
     else if (_GameState->GetDelay() != true)
     {

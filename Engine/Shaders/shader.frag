@@ -13,9 +13,10 @@ void main()
     if(isTexture == 1)
     {
         fColor = texture(uTexture, TexCoord);
-        if(fColor.x > 0.8 && fColor.y > 0.8 && fColor.z > 0.8)
+        const float treshold = 0.91f;
+        if(fColor.x > treshold && fColor.y > treshold && fColor.z > treshold)
             discard;
-        fColor = mix(fColor, uColor, 0.8);
+        fColor = mix(fColor, uColor, 0.5);
     }
     else
         fColor = uColor;
